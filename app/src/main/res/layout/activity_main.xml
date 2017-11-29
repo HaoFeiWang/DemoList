@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.whf.demolist.MainActivity">
 
     <Button
@@ -10,5 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="单元测试"/>
+    <Button
+        android:id="@+id/btn_anim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="动画插值器"/>
 
 </LinearLayout>

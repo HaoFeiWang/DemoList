@@ -1,7 +1,5 @@
 package com.whf.demolist.common.net;
 
-import java.util.List;
-
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -13,5 +11,5 @@ import retrofit2.http.Path;
 public interface NetService {
 
     @GET("data/Android/10/{page}")
-    Observable<List<GankResult>> getAndroidData(@Path("page") int page);
+    Observable<GankResult> getAndroidData(@Path("page") int page);
 }

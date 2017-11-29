@@ -47,7 +47,9 @@ public class DbUnitTest {
         gankEntry1.setCreateAt("2017-00-01");
         gankEntry1.setDesc("第一个数据");
         gankEntry1.setPublishedAt("2017-00-01T01:01");
-        gankEntry1.setImages("http://www.baidu.com/image/1");
+        ArrayList<String> image1 = new ArrayList<>();
+        image1.add("http://www.baidu.com/image/1");
+        gankEntry1.setImages(image1);
         gankEntry1.setType("Android");
         gankEntry1.setWho("赵钱");
         gankEntry1.setUrl("http://www.google.com/url/1");
@@ -59,7 +61,9 @@ public class DbUnitTest {
         gankEntry2.setCreateAt("2017-00-02");
         gankEntry2.setDesc("第二个数据");
         gankEntry2.setPublishedAt("2017-00-02T02:02");
-        gankEntry2.setImages("http://www.baidu.com/image/2");
+        ArrayList<String> image2 = new ArrayList<>();
+        image1.add("http://www.baidu.com/image/2");
+        gankEntry2.setImages(image2);
         gankEntry2.setType("IOS");
         gankEntry2.setWho("孙李");
         gankEntry2.setUrl("http://www.google.com/url/2");
@@ -71,7 +75,9 @@ public class DbUnitTest {
         gankEntry3.setCreateAt("2017-00-03");
         gankEntry3.setDesc("第三个数据");
         gankEntry3.setPublishedAt("2017-00-03T03:03");
-        gankEntry3.setImages("http://www.baidu.com/image/3");
+        ArrayList<String> image3 = new ArrayList<>();
+        image1.add("http://www.baidu.com/image/3");
+        gankEntry3.setImages(image3);
         gankEntry3.setType("Windows");
         gankEntry3.setWho("周吴");
         gankEntry3.setUrl("http://www.google.com/url/3");

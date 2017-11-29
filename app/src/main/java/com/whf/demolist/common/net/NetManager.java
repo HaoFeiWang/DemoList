@@ -1,6 +1,5 @@
 package com.whf.demolist.common.net;
 
-import android.content.Context;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class NetManager {
         return netManager;
     }
 
-    public Observable<List<GankResult>> getAndroidData(int page){
+    public Observable<GankResult> getAndroidData(int page){
         return netService.getAndroidData(page);
     }
 

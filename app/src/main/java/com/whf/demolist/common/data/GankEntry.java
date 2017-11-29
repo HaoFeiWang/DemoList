@@ -3,6 +3,8 @@ package com.whf.demolist.common.data;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.List;
+
 /**
  * Created by @author WangHaoFei on 2017/11/13.
  */
@@ -23,7 +25,7 @@ public class GankEntry {
     @DatabaseField
     private String url;
     @DatabaseField
-    private String images;
+    private List<String> images;
     @DatabaseField
     private Boolean used;
     @DatabaseField
@@ -93,11 +95,11 @@ public class GankEntry {
         this.who = who;
     }
 
-    public String getImages() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImages(String images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 
