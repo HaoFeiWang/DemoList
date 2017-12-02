@@ -3,11 +3,8 @@ package com.whf.demolist.qrcode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
-import android.util.Log;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
-import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
@@ -55,10 +52,12 @@ public class QrCodeUtil {
             // 生成二维码图片的格式，使用ARGB_8888
             Bitmap bitmap = Bitmap.createBitmap(widthPix, heightPix, Bitmap.Config.ARGB_8888);
             bitmap.setPixels(pixels, 0, widthPix, 0, 0, widthPix, heightPix);
-            //必须使用compress方法将bitmap保存到文件中再进行读取。直接返回的bitmap是没有任何压缩的，内存消耗巨大！
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(filePath));
 
-            return BitmapFactory.decodeFile(filePath);
+//            //必须使用compress方法将bitmap保存到文件中再进行读取。直接返回的bitmap是没有任何压缩的，内存消耗巨大！
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(filePath));
+//            return BitmapFactory.decodeFile(filePath);
+
+            return bitmap;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

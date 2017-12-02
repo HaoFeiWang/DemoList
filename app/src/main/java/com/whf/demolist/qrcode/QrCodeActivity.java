@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.whf.demolist.R;
+import com.whf.demolist.qrcode.activity.CaptureActivity;
 
 public class QrCodeActivity extends AppCompatActivity {
 
@@ -37,5 +38,19 @@ public class QrCodeActivity extends AppCompatActivity {
             ivQrcode.setImageBitmap(bitmap);
         });
 
+        btnScan.setOnClickListener(v -> {
+            //打开扫描界面扫描条形码或二维码
+            Intent openCameraIntent = new Intent(QrCodeActivity.this, CaptureActivity.class);
+            startActivityForResult(openCameraIntent, 0);
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            String message = data.getStringExtra("result");
+            edtContent.setText(message);
+        }
     }
 }
