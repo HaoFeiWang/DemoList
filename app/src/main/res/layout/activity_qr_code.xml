@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp"
+    android:background="#4b9fbe"
+    tools:context="com.whf.demolist.qrcode.QrCodeActivity">
+
+    <EditText
+        android:id="@+id/edt_content_qrcode"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:hint="输入二维码内容" />
+
+    <Button
+        android:id="@+id/btn_create_qrcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="生成二维码" />
+
+    <Button
+        android:id="@+id/btn_scan_qrcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="扫描二维码" />
+
+    <ImageView
+        android:id="@+id/iv_qrcode"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:background="#f2adad" />
+
+</LinearLayout>

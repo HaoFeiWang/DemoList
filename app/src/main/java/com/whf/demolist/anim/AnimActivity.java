@@ -139,7 +139,7 @@ public class AnimActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_cycle:
                 anim.translationX(300).setDuration(0).start();
-                anim.translationX(600).setInterpolator(new CycleInterpolator(2)).setDuration(1000).start();
+                anim.translationX(100).setInterpolator(new CycleInterpolator(2)).setDuration(1000).start();
                 break;
             case R.id.btn_bounce:
                 anim.translationX(600).setInterpolator(new BounceInterpolator()).setDuration(1000).start();
