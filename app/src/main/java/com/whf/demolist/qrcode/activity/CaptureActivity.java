@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.LoginFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Surface;
@@ -50,12 +51,14 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.DecodeHintType;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.FormatException;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.whf.demolist.R;
 import com.whf.demolist.qrcode.camera.CameraManager;
 import com.whf.demolist.qrcode.decode.CaptureActivityHandler;
@@ -74,9 +77,6 @@ import java.util.Map;
  * This activity opens the camera and does the actual scanning on a background thread. It draws a
  * viewfinder to help the user place the barcode correctly, shows feedback as the image processing
  * is happening, and then overlays the results when a scan is successful.
- *
- * @author dswitkin@google.com (Daniel Switkin)
- * @author Sean Owen
  */
 public final class CaptureActivity extends Activity implements SurfaceHolder.Callback {
 
@@ -84,71 +84,67 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
-    private boolean hasSurface;
-
-    private Collection<BarcodeFormat> decodeFormats;
-    private String characterSet;
-
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
-    private AmbientLightManager ambientLightManager;
+//    private AmbientLightManager ambientLightManager;
 
-    private SurfaceView scanPreview = null;
+    private SurfaceView scanPreview;
     private RelativeLayout scanContainer;
     private RelativeLayout scanCropView;
+    /**
+     * 扫描线
+     */
     private ImageView scanLine;
-    private Rect mCropRect = null;
-
+    /**
+     * 闪光灯开关
+     */
     private TextView mSetTorch;
+    /**
+     * 从本地读取数据
+     */
     private TextView mScanLocalPic;
+
+    private Rect mCropRect = null;
 
     /**
      * 判断是否开启闪光灯
      */
     private boolean isOpenTorch;
 
+    /**
+     * 判断Surface是否绘制中
+     */
+    private boolean hasSurface;
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
+        //保持屏幕常量
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_capture);
 
-        scanPreview = (SurfaceView) findViewById(R.id.capture_preview);
-        scanContainer = (RelativeLayout) findViewById(R.id.capture_container);
-        scanCropView = (RelativeLayout) findViewById(R.id.capture_crop_view);
-        scanLine = (ImageView) findViewById(R.id.capture_scan_line);
-
-        mSetTorch = (TextView) findViewById(R.id.btn_open_flashlight);
-        mScanLocalPic = (TextView) findViewById(R.id.btn_scan_local_pic);
+        initView();
+        initListener();
 
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         beepManager = new BeepManager(this);
-        ambientLightManager = new AmbientLightManager(this);
-
-        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation
-                .RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT,
-                0.9f);
-        animation.setDuration(2000);
-        animation.setRepeatCount(-1);
-        animation.setRepeatMode(Animation.RESTART);
-        scanLine.startAnimation(animation);
-
+//        ambientLightManager = new AmbientLightManager(this);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void initView() {
+        scanPreview = findViewById(R.id.capture_preview);
+        scanContainer = findViewById(R.id.capture_container);
+        scanCropView = findViewById(R.id.capture_crop_view);
+        scanLine = findViewById(R.id.capture_scan_line);
 
-        // CameraManager must be initialized here, not in onCreate(). This is necessary because we don't
-        // want to open the camera driver and measure the screen size if we're going to show the help on
-        // first launch. That led to bugs where the scanning rectangle was the wrong size and partially
-        // off screen.
-        cameraManager = new CameraManager(getApplication());
+        mSetTorch = findViewById(R.id.btn_open_flashlight);
+        mScanLocalPic = findViewById(R.id.btn_scan_local_pic);
+    }
 
-        handler = null;
+    private void initListener() {
         mSetTorch.setOnClickListener(v -> {
             if (isOpenTorch) {
                 isOpenTorch = false;
@@ -160,34 +156,52 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             cameraManager.setTorch(isOpenTorch);
         });
 
-
         mScanLocalPic.setOnClickListener(this::pickPictureFromAblum);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation
+                .RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT,
+                0.9f);
+        animation.setDuration(2000);
+        animation.setRepeatCount(-1);
+        animation.setRepeatMode(Animation.RESTART);
+        scanLine.startAnimation(animation);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //CameraManager必须在这儿初始化，不可以在onCreate()中。这是必须的，因为打开相机驱动程序去测量屏幕尺寸会有一些尺寸不准的bug
+        cameraManager = new CameraManager(getApplication());
+
+        setRequestedOrientation(getCurrentOrientation());
         //横屏
-//       setRequestedOrientation(getCurrentOrientation());
-//       setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+
+        handler = null;
 
         beepManager.updatePrefs();
 //        ambientLightManager.start(cameraManager);
         inactivityTimer.onResume();
-
-        decodeFormats = null;
-        characterSet = null;
-
-
         SurfaceHolder surfaceHolder = scanPreview.getHolder();
         if (hasSurface) {
-            // The activity was paused but not stopped, so the surface still exists. Therefore
-            // surfaceCreated() won't be called, so init the camera here.
+            //The activity was paused but not stopped, so the surface still exists. Therefore
+            //surfaceCreated() won't be called, so init the camera here.
             initCamera(surfaceHolder);
         } else {
-            // Install the callback and wait for surfaceCreated() to init the camera.
+            //Install the callback and wait for surfaceCreated() to init the camera.
             surfaceHolder.addCallback(this);
         }
     }
 
     private int getCurrentOrientation() {
+        //0、1、2、3 依次左转90度
         int rotation = getWindowManager().getDefaultDisplay().getRotation();
+        Log.i("QrCode", "rotation = " + rotation);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             switch (rotation) {
                 case Surface.ROTATION_0:
@@ -262,7 +276,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             cameraManager.openDriver(surfaceHolder);
             // Creating the handler starts the preview, which can also throw a RuntimeException.
             if (handler == null) {
-                handler = new CaptureActivityHandler(this, decodeFormats, characterSet, cameraManager);
+                handler = new CaptureActivityHandler(this, null, null, cameraManager);
             }
             initCrop();
         } catch (IOException ioe) {
@@ -280,10 +294,10 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
      * 初始化截取的矩形区域
      */
     private void initCrop() {
-        int cameraWidth = cameraManager.getBestPreviewSize().y;
         int cameraHeight = cameraManager.getBestPreviewSize().x;
+        int cameraWidth = cameraManager.getBestPreviewSize().y;
 
-        /** 获取布局中扫描框的位置和宽高 */
+        // 获取布局中扫描框的位置和宽高
         int[] location = new int[2];
         scanCropView.getLocationInWindow(location);
 
@@ -293,21 +307,21 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         int cropWidth = scanCropView.getWidth();
         int cropHeight = scanCropView.getHeight();
 
-        /** 获取布局容器的宽高 */
+        // 获取布局容器的宽高
         int containerWidth = scanContainer.getWidth();
         int containerHeight = scanContainer.getHeight();
 
-        /** 计算最终截取的矩形的左上角顶点x坐标 */
+        //计算最终截取的矩形的左上角顶点x坐标
         int x = cropLeft * cameraWidth / containerWidth;
-        /** 计算最终截取的矩形的左上角顶点y坐标 */
+        //计算最终截取的矩形的左上角顶点y坐标
         int y = cropTop * cameraHeight / containerHeight;
 
-        /** 计算最终截取的矩形的宽度 */
+        //计算最终截取的矩形的宽度
         int width = cropWidth * cameraWidth / containerWidth;
-        /** 计算最终截取的矩形的高度 */
+        //计算最终截取的矩形的高度
         int height = cropHeight * cameraHeight / containerHeight;
 
-        /** 生成最终的截取的矩形 */
+        //生成最终的截取的矩形
         mCropRect = new Rect(x, y, width + x, height + y);
     }
 
@@ -338,8 +352,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     /*
-     * (non-Javadoc)
-     *
      * @see android.app.Activity#onActivityResult(int, int,
      * android.content.Intent) 对相册获取的结果进行分析
      */
@@ -349,7 +361,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 1:
+                    //Uri: content://media/external/images/media/371773
                     Uri selectedImage = data.getData();
+                    Log.i("QrCode","select image uri = "+selectedImage);
                     String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
                     Cursor cursor = getContentResolver().query(selectedImage,
@@ -377,8 +391,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     /**
      * 解析QR图内容
-     *
-     * @return
      */
     private Result scanImageQR(String picturePath) {
 
@@ -405,13 +417,14 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         int[] pixels = new int[width * height];
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
 
+        //核心
         RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
         BinaryBitmap bitmap1 = new BinaryBitmap(new HybridBinarizer(source));
         QRCodeReader reader = new QRCodeReader();
         Result result;
 
         try {
-            result = reader.decode(bitmap1, (Hashtable<DecodeHintType, Object>) hints);
+            result = reader.decode(bitmap1, hints);
             return result;
         } catch (NotFoundException | FormatException | ChecksumException e) {
             Toast.makeText(CaptureActivity.this, "扫描失败",
@@ -424,14 +437,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     /**
      * A valid barcode has been found, so give an indication of success and show the results.
-     *
-     * @param rawResult The contents of the barcode.
+     * 处理解码
      */
     public void handleDecode(Result rawResult) {
-        inactivityTimer.onActivity();
-        beepManager.playBeepSoundAndVibrate();
-        // TODO: 2017/11/13 返回扫描结果
-
         inactivityTimer.onActivity();
         beepManager.playBeepSoundAndVibrate();
         Bundle bundle = new Bundle();
@@ -451,21 +459,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.app_name));
         builder.setMessage("Camera error");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-
-        });
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                finish();
-            }
-        });
+        builder.setPositiveButton("OK", (dialog, which) -> finish());
+        builder.setOnCancelListener(dialog -> finish());
         builder.show();
     }
 

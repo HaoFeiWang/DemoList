@@ -29,7 +29,9 @@
         <activity android:name=".unittest.UnitTestActivity" />
         <activity android:name=".anim.AnimActivity" />
         <activity android:name=".qrcode.QrCodeActivity" />
-        <activity android:name=".qrcode.activity.CaptureActivity"/>
+        <activity android:name=".qrcode.activity.CaptureActivity" />
+        <activity android:name=".camera.CameraActivity" />
+        <activity android:name=".surfaceview.SurfaceViewActivity"></activity>
     </application>
 
 </manifest>

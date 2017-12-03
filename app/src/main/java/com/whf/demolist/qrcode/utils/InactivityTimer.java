@@ -29,6 +29,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 /**
  * Finishes an activity after a period of inactivity if the device is on battery power.
+ * 在未充电的情况下，延迟一定时间进行关闭页面的定时器
  */
 public final class InactivityTimer {
 

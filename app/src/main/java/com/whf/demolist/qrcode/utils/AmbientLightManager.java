@@ -27,9 +27,7 @@ import com.whf.demolist.qrcode.camera.CameraManager;
 
 /**
  * Detects ambient light and switches on the front light when very dark, and off again when sufficiently light.
- *
- * @author Sean Owen
- * @author Nikolaus Huber
+ * 环境光检测
  */
 public final class AmbientLightManager implements SensorEventListener {
 

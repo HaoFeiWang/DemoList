@@ -19,12 +19,6 @@ public class EncodingUtils {
 
     /**
      * 创建二维码
-     *
-     * @param content   content
-     * @param widthPix  widthPix
-     * @param heightPix heightPix
-     * @param logoBm    logoBm
-     * @return 二维码
      */
     public static Bitmap createQRCode(String content, int widthPix, int heightPix, Bitmap logoBm) {
         try {

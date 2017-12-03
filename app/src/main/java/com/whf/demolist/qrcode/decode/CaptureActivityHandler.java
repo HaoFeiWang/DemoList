@@ -32,12 +32,8 @@ import java.util.Collection;
 
 /**
  * This class handles all the messaging which comprises the state machine for capture.
- *
- * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class CaptureActivityHandler extends Handler {
-
-    private static final String TAG = CaptureActivityHandler.class.getSimpleName();
 
     private final CaptureActivity activity;
     private final DecodeThread decodeThread;

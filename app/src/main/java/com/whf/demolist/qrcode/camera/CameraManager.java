@@ -30,10 +30,9 @@ import java.io.IOException;
  * This object wraps the Camera service object and expects to be the only one talking to it. The
  * implementation encapsulates the steps needed to take preview-sized images, which are used for
  * both preview and decoding.
- *
- * @author dswitkin@google.com (Daniel Switkin)
  */
-@SuppressWarnings("deprecation") // camera APIs
+// camera APIs
+@SuppressWarnings("deprecation")
 public final class CameraManager {
 
     private static final String TAG = CameraManager.class.getSimpleName();
