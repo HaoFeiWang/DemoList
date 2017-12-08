@@ -58,10 +58,11 @@ public class SurfaceViewActivity extends AppCompatActivity implements SurfaceHol
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-
-        int[] location = new int[2];
-        drawingBoard.getLocationOnScreen(location);
-        actionBarHeight = location[1];
+        if (hasFocus){
+            int[] location = new int[2];
+            drawingBoard.getLocationOnScreen(location);
+            actionBarHeight = location[1];
+        }
     }
 
     @Override
@@ -74,6 +75,7 @@ public class SurfaceViewActivity extends AppCompatActivity implements SurfaceHol
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.RED);
         paint.setAntiAlias(true);
+        paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeWidth(10);
         path = new Path();
     }
@@ -142,8 +144,10 @@ public class SurfaceViewActivity extends AppCompatActivity implements SurfaceHol
         switch (event.getAction()) {
             case ACTION_DOWN:
                 Log.i(TAG, "drawing thread state = " + drawingThread.getState());
-                isDrawing = true;
-                drawingThread.start();
+                if (!drawingThread.isAlive()){
+                    isDrawing = true;
+                    drawingThread.start();
+                }
                 lastX = x;
                 lastY = y;
                 path.moveTo(x, y);

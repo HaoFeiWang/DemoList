@@ -5,13 +5,24 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 震动权限 -->
+
+    <!-- 震动权限 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- 使用照相机权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 蓝牙权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <!-- 操纵管理蓝牙设置权限，低功耗蓝牙必须声明 -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
-    <uses-feature android:name="android.hardware.camera" /> <!-- 使用照相机权限 -->
+
+    <!-- 相机硬件设备使用功能 -->
+    <uses-feature android:name="android.hardware.camera" />
+    <!-- 自动聚焦功能 -->
     <uses-feature android:name="android.hardware.camera.autofocus" />
+    <!-- 低功耗蓝颜 -->
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
-    <!-- 自动聚焦权限 -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -26,12 +37,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".unittest.UnitTestActivity" />
         <activity android:name=".anim.AnimActivity" />
         <activity android:name=".qrcode.QrCodeActivity" />
         <activity android:name=".qrcode.activity.CaptureActivity" />
         <activity android:name=".camera.CameraActivity" />
-        <activity android:name=".surfaceview.SurfaceViewActivity"></activity>
+        <activity android:name=".surfaceview.SurfaceViewActivity" />
+        <activity android:name=".bluetooth.BluetoothActivity" />
     </application>
 
 </manifest>

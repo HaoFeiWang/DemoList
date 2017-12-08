@@ -7,11 +7,6 @@
     tools:context="com.whf.demolist.MainActivity">
 
     <Button
-        android:id="@+id/btn_unit_test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="单元测试"/>
-    <Button
         android:id="@+id/btn_anim"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,5 +26,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="二维码"/>
+
+    <Button
+        android:id="@+id/btn_bluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="蓝牙"/>
 
 </LinearLayout>
