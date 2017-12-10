@@ -11,17 +11,20 @@
     <!-- 使用照相机权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- 蓝牙权限 -->
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <!-- 操纵管理蓝牙设置权限，低功耗蓝牙必须声明 -->
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!-- 低功耗蓝牙获取扫描结果 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- 相机硬件设备使用功能 -->
     <uses-feature android:name="android.hardware.camera" />
     <!-- 自动聚焦功能 -->
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <!-- 低功耗蓝颜 -->
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+    <!-- 低功耗蓝牙 -->
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -43,6 +46,7 @@
         <activity android:name=".camera.CameraActivity" />
         <activity android:name=".surfaceview.SurfaceViewActivity" />
         <activity android:name=".bluetooth.BluetoothActivity" />
+        <activity android:name=".bluetooth.InfoActivity"></activity>
     </application>
 
 </manifest>
