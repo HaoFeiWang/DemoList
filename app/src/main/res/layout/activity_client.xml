@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.whf.demolist.binder.ClientActivity">
+
+    <Button
+        android:id="@+id/btn_start_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开启Local服务" />
+
+    <Button
+        android:id="@+id/btn_stop_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/btn_start_service"
+        android:text="关闭Local服务" />
+
+    <Button
+        android:id="@+id/btn_bind_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/btn_stop_service"
+        android:text="绑定Local服务" />
+
+    <Button
+        android:id="@+id/btn_service_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_stop_service"
+        android:text="获取Local Service的数据" />
+
+    <Button
+        android:id="@+id/btn_start_remote_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_service_data"
+        android:text="开启Remote服务" />
+
+    <Button
+        android:id="@+id/btn_stop_remote_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_service_data"
+        android:layout_toEndOf="@+id/btn_start_service"
+        android:text="关闭Remote服务" />
+
+    <Button
+        android:id="@+id/btn_bind_remote_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_service_data"
+        android:layout_toEndOf="@+id/btn_stop_service"
+        android:text="绑定Remote服务" />
+
+    <Button
+        android:id="@+id/btn_service_remote_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_stop_remote_service"
+        android:text="获取Remote Service的数据" />
+
+</RelativeLayout>

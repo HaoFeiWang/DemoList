@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.whf.demolist.anim.AnimActivity;
+import com.whf.demolist.binder.ClientActivity;
 import com.whf.demolist.bluetooth.BluetoothActivity;
 import com.whf.demolist.camera.CameraActivity;
 import com.whf.demolist.qrcode.QrCodeActivity;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnCamera;
     private Button btnSurface;
     private Button btnBluetooth;
+    private Button btnBinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnCamera = findViewById(R.id.btn_camera);
         btnSurface = findViewById(R.id.btn_surface);
         btnBluetooth = findViewById(R.id.btn_bluetooth);
+        btnBinder = findViewById(R.id.btn_binder);
     }
 
     private void initListener() {
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnCamera.setOnClickListener(this);
         btnSurface.setOnClickListener(this);
         btnBluetooth.setOnClickListener(this);
+        btnBinder.setOnClickListener(this);
     }
 
     @Override
@@ -62,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_bluetooth:
                 startActivity(new Intent(this, BluetoothActivity.class));
+                break;
+            case R.id.btn_binder:
+                startActivity(new Intent(this, ClientActivity.class));
                 break;
             default:
                 break;

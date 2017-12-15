@@ -33,4 +33,10 @@
         android:layout_height="wrap_content"
         android:text="蓝牙"/>
 
+    <Button
+        android:id="@+id/btn_binder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Binder"/>
+
 </LinearLayout>

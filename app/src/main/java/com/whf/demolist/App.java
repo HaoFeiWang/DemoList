@@ -1,6 +1,7 @@
 package com.whf.demolist;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.whf.demolist.common.data.DatabaseHelp;
 
@@ -10,9 +11,12 @@ import com.whf.demolist.common.data.DatabaseHelp;
 
 public class App extends Application {
 
+    public static final String TAG = "WhfDemoList";
+
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.i(TAG, "app create");
         DatabaseHelp.initDataBaseHelp(getApplicationContext());
     }
 }
