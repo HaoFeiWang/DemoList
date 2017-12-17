@@ -117,6 +117,12 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Log.i(App.TAG, "bind remote service");
                 ClientActivity.this.remoteService = IRemote.Stub.asInterface(service);
+                //设置死亡代理
+                try {
+                    service.linkToDeath(deathRecipient,0);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -147,4 +153,20 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
 
         bindService(new Intent(ClientActivity.this, LocalService.class), serviceConnection, BIND_AUTO_CREATE);
     }
+
+    /**
+     * Binder死亡代理
+     */
+    private IBinder.DeathRecipient deathRecipient = new IBinder.DeathRecipient() {
+        @Override
+        public void binderDied() {
+            if (remoteService==null){
+                return;
+            }
+            remoteService.asBinder().unlinkToDeath(deathRecipient,0);
+            remoteService = null;
+            //重新绑定远程服务
+            bindRemoteService();
+        }
+    };
 }

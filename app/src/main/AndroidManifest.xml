@@ -58,7 +58,9 @@
             android:name=".binder.RemoteService"
             android:enabled="true"
             android:exported="true"
-            android:process=":remote"/>
+            android:process=":remote" />
+
+        <activity android:name=".metriadesign.ToolbarActivity"></activity>
     </application>
 
 </manifest>
