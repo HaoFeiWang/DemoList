@@ -10,6 +10,7 @@ import com.whf.demolist.anim.AnimActivity;
 import com.whf.demolist.binder.ClientActivity;
 import com.whf.demolist.bluetooth.BluetoothActivity;
 import com.whf.demolist.camera.CameraActivity;
+import com.whf.demolist.notification.NotificationActivity;
 import com.whf.demolist.qrcode.QrCodeActivity;
 import com.whf.demolist.surfaceview.SurfaceViewActivity;
 
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnSurface;
     private Button btnBluetooth;
     private Button btnBinder;
+    private Button btnNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSurface = findViewById(R.id.btn_surface);
         btnBluetooth = findViewById(R.id.btn_bluetooth);
         btnBinder = findViewById(R.id.btn_binder);
+        btnNotification = findViewById(R.id.btn_notification);
     }
 
     private void initListener() {
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSurface.setOnClickListener(this);
         btnBluetooth.setOnClickListener(this);
         btnBinder.setOnClickListener(this);
+        btnNotification.setOnClickListener(this);
     }
 
     @Override
@@ -70,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_binder:
                 startActivity(new Intent(this, ClientActivity.class));
                 break;
+            case R.id.btn_notification:
+                startActivity(new Intent(this, NotificationActivity.class));
             default:
                 break;
         }

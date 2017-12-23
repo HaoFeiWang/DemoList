@@ -60,7 +60,17 @@
             android:exported="true"
             android:process=":remote" />
 
-        <activity android:name=".metriadesign.ToolbarActivity"></activity>
+        <activity android:name=".metriadesign.ToolbarActivity" />
+        <activity android:name=".notification.NotificationActivity" />
+
+        <receiver
+            android:name=".notification.NotificationReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.whf.cancel.notification" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

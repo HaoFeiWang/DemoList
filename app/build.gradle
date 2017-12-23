@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.whf.demolist"
-        minSdkVersion 25
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -21,6 +21,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+
 
 
 dependencies {
