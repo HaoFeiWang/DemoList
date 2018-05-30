@@ -1,4 +1,4 @@
-package com.whf.demolist.bluetooth;
+package com.whf.demolist.bluetooth.ble;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -13,40 +13,30 @@ import android.widget.TextView;
 
 import com.whf.demolist.R;
 
-public class InfoActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private TextView tvBluetooth;
+public class InfoActivity extends AppCompatActivity {
     private Button btnConnect;
 
     private BluetoothDevice bluetoothDevice;
     private BluetoothGattCallback bluetoothGattCallback;
+    private BluetoothGatt bluetoothGatt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
 
-        tvBluetooth = findViewById(R.id.tv_bluetooth);
+        TextView tvBluetooth = findViewById(R.id.tv_bluetooth);
         btnConnect = findViewById(R.id.btn_connect);
 
         Intent intent = getIntent();
-        bluetoothDevice = intent.getParcelableExtra("bluetooth");
-        tvBluetooth.setText(bluetoothDevice.getName() + " / " + bluetoothDevice.getAddress());
+        bluetoothDevice = intent.getParcelableExtra(Constants.REMOTE_BLUETOOTH);
+        String bluetoothInfo = bluetoothDevice.getName() + " | " + bluetoothDevice.getAddress();
+        tvBluetooth.setText(bluetoothInfo);
 
-        btnConnect.setOnClickListener(this);
+        initListener();
     }
 
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_connect:
-                connect();
-                break;
-        }
-    }
-
-    private void connect() {
+    private void initListener() {
         bluetoothGattCallback = new BluetoothGattCallback() {
             @Override
             public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -69,7 +59,16 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
 
+        btnConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                connect();
+            }
+        });
+    }
+
+    private void connect() {
         //直接连接远端设备 (false) 或 远端设备 becomes available 时自动连接 (true).
-        bluetoothDevice.connectGatt(this, false, bluetoothGattCallback);
+        bluetoothGatt = bluetoothDevice.connectGatt(this, false, bluetoothGattCallback);
     }
 }

@@ -46,8 +46,8 @@
         <activity android:name=".qrcode.activity.CaptureActivity" />
         <activity android:name=".camera.CameraActivity" />
         <activity android:name=".surfaceview.SurfaceViewActivity" />
-        <activity android:name=".bluetooth.BluetoothActivity" />
-        <activity android:name=".bluetooth.InfoActivity" />
+        <activity android:name=".bluetooth.ble.ClientActivity" />
+        <activity android:name=".bluetooth.ble.InfoActivity" />
         <activity android:name=".binder.ClientActivity" />
 
         <service
@@ -71,6 +71,11 @@
                 <action android:name="com.whf.cancel.notification" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".bluetooth.ble.ClientService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

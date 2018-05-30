@@ -1,48 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context="com.whf.demolist.bluetooth.BluetoothActivity">
+    android:orientation="vertical"
+    tools:context="com.whf.demolist.bluetooth.ble.ClientActivity">
 
-    <LinearLayout
-        android:id="@+id/ll_btn"
+    <Button
+        android:id="@+id/btn_scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/btn_is_support_ble"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="判断设备是否支持低功耗蓝牙" />
-
-        <Button
-            android:id="@+id/btn_start_bluetooth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="开启蓝牙" />
-
-        <Button
-            android:id="@+id/btn_scan_binding"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="检索已绑定设备" />
-
-        <Button
-            android:id="@+id/btn_scan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="扫描设备" />
-
-    </LinearLayout>
+        android:text="扫描设备" />
 
     <ListView
         android:id="@+id/lv_bluetooth_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ll_btn"
         android:layout_marginTop="10dp" />
 
-</RelativeLayout>
+</LinearLayout>
