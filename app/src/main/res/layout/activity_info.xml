@@ -4,17 +4,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.whf.demolist.bluetooth.ble.InfoActivity">
-
-    <TextView
-        android:id="@+id/tv_bluetooth"
+    <LinearLayout
+        android:id="@+id/ll_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp" />
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textColor="#000000"/>
+        <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textColor="#000000"/>
+        <TextView
+            android:id="@+id/tv_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textColor="#000000"/>
+
+        <TextView
+            android:id="@+id/tv_rssi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textColor="#000000"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_connect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_bluetooth"
+        android:layout_below="@id/ll_info"
         android:text="连接" />
+
+    <Button
+        android:id="@+id/btn_disconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/btn_connect"
+        android:layout_below="@id/ll_info"
+        android:text="断开"/>
 </RelativeLayout>

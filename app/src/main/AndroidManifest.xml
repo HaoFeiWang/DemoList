@@ -72,10 +72,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".bluetooth.ble.ClientService"
-            android:enabled="true"
-            android:exported="true"></service>
     </application>
 
 </manifest>
