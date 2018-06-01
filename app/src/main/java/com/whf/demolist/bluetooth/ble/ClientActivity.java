@@ -2,8 +2,11 @@ package com.whf.demolist.bluetooth.ble;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
@@ -37,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * 低功耗Ble蓝牙
@@ -46,10 +50,13 @@ public class ClientActivity extends AppCompatActivity {
     private static final String TAG = Constants.TAG + ClientActivity.class;
 
     private int state;
-
     private static final int IDLE = 0x00000000;
     private static final int PENDING_SCAN = 0x00000001;
     private static final int PENDING_BROADCAST = 0x00000010;
+
+    private static final UUID UUID_SERVICE = UUID.fromString("");
+    private static final UUID UUID_CHARACTERISTIC = UUID.fromString("");
+    private static final UUID UUID_DESCRIPTOR = UUID.fromString("");
 
     private Button btnScan;
     private Button btnBroadcast;
@@ -122,6 +129,10 @@ public class ClientActivity extends AppCompatActivity {
             public void onScanResult(int callbackType, ScanResult result) {
                 BluetoothDevice device = result.getDevice();
                 String info = device.getAddress() + "  |  " + device.getName();
+
+                //获取信号强度
+                int rssi = result.getRssi();
+
                 if (bluetoothMap.get(info) == null) {
                     Log.d(TAG, "Scan Result = " + info);
                     bluetoothMap.put(info, device);
@@ -163,11 +174,11 @@ public class ClientActivity extends AppCompatActivity {
     private void bluetoothStateChange(int state) {
         switch (state) {
             case BluetoothAdapter.STATE_ON:
-                Log.d(TAG,"bluetooth state changed to on!");
+                Log.d(TAG, "bluetooth state changed to on!");
                 bluetoothStateOn();
                 break;
             case BluetoothAdapter.STATE_OFF:
-                Log.d(TAG,"bluetooth state changed to off!");
+                Log.d(TAG, "bluetooth state changed to off!");
                 break;
         }
     }
@@ -196,7 +207,7 @@ public class ClientActivity extends AppCompatActivity {
             bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
         }
         if (!bluetoothAdapter.isEnabled()) {
-            Log.d(TAG,"bluetooth not enable!");
+            Log.d(TAG, "bluetooth not enable!");
             bluetoothAdapter.enable();
             state |= PENDING_SCAN;
             return;
@@ -212,7 +223,7 @@ public class ClientActivity extends AppCompatActivity {
         //这种扫描方式占用资源比较高，建议当应用处于前台时使用该模式
         settingBuild.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
 
-        Log.d(TAG,"start scan!");
+        Log.d(TAG, "start scan!");
         bluetoothLeScanner.startScan(scanFilterList, settingBuild.build(), scanCallback);
     }
 
@@ -229,24 +240,17 @@ public class ClientActivity extends AppCompatActivity {
             bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
         }
         if (!bluetoothAdapter.isEnabled()) {
-            Log.d(TAG,"bluetooth not enable!");
+            Log.d(TAG, "bluetooth not enable!");
             bluetoothAdapter.enable();
             state |= PENDING_BROADCAST;
             return;
         }
 
-        BluetoothLeAdvertiser advertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
-        BluetoothGattServerCallback serverCallback = new BluetoothGattServerCallback() {
-            @Override
-            public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
-                super.onConnectionStateChange(device, status, newState);
-            }
-        };
-
         AdvertiseCallback advertiseCallback = new AdvertiseCallback() {
             @Override
             public void onStartSuccess(AdvertiseSettings settingsInEffect) {
                 Log.d(TAG, "advertise success!");
+                initBluetoothService();
             }
 
             @Override
@@ -255,8 +259,81 @@ public class ClientActivity extends AppCompatActivity {
             }
         };
 
-        Log.d(TAG,"start advertising!");
+        Log.d(TAG, "start advertising!");
+        BluetoothLeAdvertiser advertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
         advertiser.startAdvertising(buildAdvertiseSettings(), buildAdvertiseData(), advertiseCallback);
+    }
+
+    private void initBluetoothService() {
+        BluetoothGattServerCallback serverCallback = new BluetoothGattServerCallback() {
+            @Override
+            public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
+                super.onConnectionStateChange(device, status, newState);
+            }
+
+            @Override
+            public void onServiceAdded(int status, BluetoothGattService service) {
+                super.onServiceAdded(status, service);
+            }
+
+            @Override
+            public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
+                super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
+            }
+
+            @Override
+            public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
+                super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
+            }
+
+            @Override
+            public void onDescriptorReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattDescriptor descriptor) {
+                super.onDescriptorReadRequest(device, requestId, offset, descriptor);
+            }
+
+            @Override
+            public void onDescriptorWriteRequest(BluetoothDevice device, int requestId, BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
+                super.onDescriptorWriteRequest(device, requestId, descriptor, preparedWrite, responseNeeded, offset, value);
+            }
+
+            @Override
+            public void onExecuteWrite(BluetoothDevice device, int requestId, boolean execute) {
+                super.onExecuteWrite(device, requestId, execute);
+            }
+
+            @Override
+            public void onNotificationSent(BluetoothDevice device, int status) {
+                super.onNotificationSent(device, status);
+            }
+
+            @Override
+            public void onMtuChanged(BluetoothDevice device, int mtu) {
+                super.onMtuChanged(device, mtu);
+            }
+
+            @Override
+            public void onPhyUpdate(BluetoothDevice device, int txPhy, int rxPhy, int status) {
+                super.onPhyUpdate(device, txPhy, rxPhy, status);
+            }
+
+            @Override
+            public void onPhyRead(BluetoothDevice device, int txPhy, int rxPhy, int status) {
+                super.onPhyRead(device, txPhy, rxPhy, status);
+            }
+        };
+
+        BluetoothGattServer server = bluetoothManager.openGattServer(this, serverCallback);
+        BluetoothGattService service = new BluetoothGattService(UUID_SERVICE,
+                BluetoothGattService.SERVICE_TYPE_PRIMARY);
+        BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(
+                UUID_CHARACTERISTIC, BluetoothGattCharacteristic.PROPERTY_READ,
+                BluetoothGattCharacteristic.PERMISSION_WRITE);
+        BluetoothGattDescriptor descriptor = new BluetoothGattDescriptor(UUID_DESCRIPTOR,
+                BluetoothGattDescriptor.PERMISSION_READ);
+
+        characteristic.addDescriptor(descriptor);
+        service.addCharacteristic(characteristic);
+        server.addService(service);
     }
 
     /**
