@@ -2,6 +2,7 @@ package com.whf.demolist.bluetooth.ble;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
@@ -54,9 +55,9 @@ public class ClientActivity extends AppCompatActivity {
     private static final int PENDING_SCAN = 0x00000001;
     private static final int PENDING_BROADCAST = 0x00000010;
 
-    private static final UUID UUID_SERVICE = UUID.fromString("");
-    private static final UUID UUID_CHARACTERISTIC = UUID.fromString("");
-    private static final UUID UUID_DESCRIPTOR = UUID.fromString("");
+    private static final UUID UUID_SERVICE = UUID.fromString("00000001-0000-1000-8000-00805f9b34fb");
+    private static final UUID UUID_CHARACTERISTIC = UUID.fromString("00000010-0000-1000-8000-00805f9b34fb");
+    private static final UUID UUID_DESCRIPTOR = UUID.fromString("00000100-0000-1000-8000-00805f9b34fb");
 
     private Button btnScan;
     private Button btnBroadcast;
@@ -265,60 +266,68 @@ public class ClientActivity extends AppCompatActivity {
     }
 
     private void initBluetoothService() {
+        //所有回掉在非UI线程，所有status参数的取值在BluetoothGatt.GATT_SUCCESS...等
         BluetoothGattServerCallback serverCallback = new BluetoothGattServerCallback() {
             @Override
             public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
-                super.onConnectionStateChange(device, status, newState);
+                //连接状态发生改变时回调，newState的取值在BluetoothGattServer.STATE_CONNECTED...
+                Log.d(TAG, "BluetoothGattServerCallback onConnectionStateChange status = " + status + " new state = " + newState);
             }
 
             @Override
             public void onServiceAdded(int status, BluetoothGattService service) {
-                super.onServiceAdded(status, service);
+                Log.d(TAG, "BluetoothGattServerCallback onServiceAdded status = " + status);
             }
 
             @Override
             public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
-                super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
+                Log.d(TAG, "BluetoothGattServerCallback onCharacteristicReadRequest requestId = "
+                        + requestId + " characteristic" + new String(characteristic.getValue()));
             }
 
             @Override
             public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
-                super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
+                Log.d(TAG, "BluetoothGattServerCallback onCharacteristicWriteRequest requestId = "
+                        + requestId + " characteristic" + new String(characteristic.getValue())
+                        + " value = " + new String(value));
             }
 
             @Override
             public void onDescriptorReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattDescriptor descriptor) {
-                super.onDescriptorReadRequest(device, requestId, offset, descriptor);
+                Log.d(TAG, "BluetoothGattServerCallback onDescriptorReadRequest requestId = "
+                        + requestId + " descriptor" + new String(descriptor.getValue()));
             }
 
             @Override
             public void onDescriptorWriteRequest(BluetoothDevice device, int requestId, BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
-                super.onDescriptorWriteRequest(device, requestId, descriptor, preparedWrite, responseNeeded, offset, value);
+                Log.d(TAG, "BluetoothGattServerCallback onDescriptorWriteRequest requestId = "
+                        + requestId + " descriptor" + new String(descriptor.getValue())
+                        + " value = " + new String(value));
             }
 
             @Override
             public void onExecuteWrite(BluetoothDevice device, int requestId, boolean execute) {
-                super.onExecuteWrite(device, requestId, execute);
+                Log.d(TAG, "BluetoothGattServerCallback onExecuteWrite requestId = " + requestId);
             }
 
             @Override
             public void onNotificationSent(BluetoothDevice device, int status) {
-                super.onNotificationSent(device, status);
+                Log.d(TAG, "BluetoothGattServerCallback onNotificationSent status = " + status);
             }
 
             @Override
             public void onMtuChanged(BluetoothDevice device, int mtu) {
-                super.onMtuChanged(device, mtu);
+                Log.d(TAG, "BluetoothGattServerCallback onMtuChanged mtu = " + mtu);
             }
 
             @Override
             public void onPhyUpdate(BluetoothDevice device, int txPhy, int rxPhy, int status) {
-                super.onPhyUpdate(device, txPhy, rxPhy, status);
+                Log.d(TAG, "BluetoothGattServerCallback onPhyUpdate status = " + status);
             }
 
             @Override
             public void onPhyRead(BluetoothDevice device, int txPhy, int rxPhy, int status) {
-                super.onPhyRead(device, txPhy, rxPhy, status);
+                Log.d(TAG, "BluetoothGattServerCallback onPhyRead status = " + status);
             }
         };
 
@@ -333,6 +342,7 @@ public class ClientActivity extends AppCompatActivity {
 
         characteristic.addDescriptor(descriptor);
         service.addCharacteristic(characteristic);
+        //添加成功会回调BluetoothGattServerCallback的onServiceAdded方法
         server.addService(service);
     }
 

@@ -1,47 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.whf.demolist.MainActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/btn_anim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="动画插值器"/>
+        <Button
+            android:id="@+id/btn_surface"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SurfaceView"/>
+        <Button
+            android:id="@+id/btn_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="相机"/>
+        <Button
+            android:id="@+id/btn_qrcode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="二维码"/>
 
-    <Button
-        android:id="@+id/btn_anim"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="动画插值器"/>
-    <Button
-        android:id="@+id/btn_surface"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SurfaceView"/>
-    <Button
-        android:id="@+id/btn_camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="相机"/>
-    <Button
-        android:id="@+id/btn_qrcode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="二维码"/>
+        <Button
+            android:id="@+id/btn_bluetooth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="蓝牙"/>
 
-    <Button
-        android:id="@+id/btn_bluetooth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="蓝牙"/>
-
-    <Button
-        android:id="@+id/btn_binder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Binder"/>
-    <Button
-        android:id="@+id/btn_notification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="通知栏"/>
-
-</LinearLayout>
+        <Button
+            android:id="@+id/btn_binder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Binder"/>
+        <Button
+            android:id="@+id/btn_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="通知栏"/>
+    </LinearLayout>
+</ScrollView>
