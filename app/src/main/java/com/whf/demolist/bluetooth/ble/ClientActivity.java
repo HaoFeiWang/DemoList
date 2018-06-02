@@ -1,5 +1,6 @@
 package com.whf.demolist.bluetooth.ble;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -24,6 +25,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,10 +56,6 @@ public class ClientActivity extends AppCompatActivity {
     private static final int IDLE = 0x00000000;
     private static final int PENDING_SCAN = 0x00000001;
     private static final int PENDING_BROADCAST = 0x00000010;
-
-    private static final UUID UUID_SERVICE = UUID.fromString("00000001-0000-1000-8000-00805f9b34fb");
-    private static final UUID UUID_CHARACTERISTIC = UUID.fromString("00000010-0000-1000-8000-00805f9b34fb");
-    private static final UUID UUID_DESCRIPTOR = UUID.fromString("00000100-0000-1000-8000-00805f9b34fb");
 
     private Button btnScan;
     private Button btnBroadcast;
@@ -200,6 +198,7 @@ public class ClientActivity extends AppCompatActivity {
      * 扫描周围的蓝牙设备，该操作为异步操作的，但是会消耗大量资源，一般扫描时长为12秒，建议找到需要的设备后，执行取消扫描
      */
     private void scanBluetooth() {
+        checkPermission();
         if (!checkVariableNotNull()) {
             Log.e(TAG, "bluetooth not usable!");
             return;
@@ -222,10 +221,19 @@ public class ClientActivity extends AppCompatActivity {
         //扫描时的设置
         ScanSettings.Builder settingBuild = new ScanSettings.Builder();
         //这种扫描方式占用资源比较高，建议当应用处于前台时使用该模式
-        settingBuild.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
+        settingBuild.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
 
         Log.d(TAG, "start scan!");
         bluetoothLeScanner.startScan(scanFilterList, settingBuild.build(), scanCallback);
+    }
+
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Log.d(TAG, "check self permission");
+            if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 60);
+            }
+        }
     }
 
 
@@ -332,17 +340,19 @@ public class ClientActivity extends AppCompatActivity {
         };
 
         BluetoothGattServer server = bluetoothManager.openGattServer(this, serverCallback);
-        BluetoothGattService service = new BluetoothGattService(UUID_SERVICE,
+        BluetoothGattService service = new BluetoothGattService(Constants.UUID_SERVICE,
                 BluetoothGattService.SERVICE_TYPE_PRIMARY);
         BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(
-                UUID_CHARACTERISTIC, BluetoothGattCharacteristic.PROPERTY_READ,
-                BluetoothGattCharacteristic.PERMISSION_WRITE);
-        BluetoothGattDescriptor descriptor = new BluetoothGattDescriptor(UUID_DESCRIPTOR,
+                Constants.UUID_CHARACTERISTIC, BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE,
+                BluetoothGattCharacteristic.PERMISSION_WRITE | BluetoothGattCharacteristic.PERMISSION_READ);
+        BluetoothGattDescriptor descriptor = new BluetoothGattDescriptor(Constants.UUID_DESCRIPTOR,
                 BluetoothGattDescriptor.PERMISSION_READ);
 
-        characteristic.addDescriptor(descriptor);
+        //向特征中添加描述符，如果有描述符就不能写
+//        characteristic.addDescriptor(descriptor);
         service.addCharacteristic(characteristic);
         //添加成功会回调BluetoothGattServerCallback的onServiceAdded方法
+        server.clearServices();
         server.addService(service);
     }
 
@@ -350,7 +360,11 @@ public class ClientActivity extends AppCompatActivity {
      * 创建广播设置
      */
     private AdvertiseSettings buildAdvertiseSettings() {
-        AdvertiseSettings.Builder builder = new AdvertiseSettings.Builder();
+        AdvertiseSettings.Builder builder = new AdvertiseSettings.Builder()
+                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
+                .setConnectable(true)
+                .setTimeout(0)
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH);
         return builder.build();
     }
 
@@ -358,9 +372,11 @@ public class ClientActivity extends AppCompatActivity {
      * 创建广播数据
      */
     private AdvertiseData buildAdvertiseData() {
-        AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder();
-        //参数一为厂家ID，参数二为厂家的扩展值（byte[]）
-        dataBuilder.addManufacturerData(0x34, new byte[]{0x56});
+        AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder()
+                //参数一为厂家ID，参数二为厂家的扩展值（byte[]）,一般不用设置否则会出现扫描不到
+//                .addManufacturerData(0x34, new byte[]{0x56})
+                .setIncludeDeviceName(true)
+                .setIncludeTxPowerLevel(true);
 
         return dataBuilder.build();
     }

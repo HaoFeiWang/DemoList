@@ -3,37 +3,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
     tools:context="com.whf.demolist.bluetooth.ble.InfoActivity">
+
     <LinearLayout
         android:id="@+id/ll_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:textColor="#000000"/>
+            android:textColor="#000000" />
+
         <TextView
             android:id="@+id/tv_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:textColor="#000000"/>
+            android:textColor="#000000" />
+
         <TextView
             android:id="@+id/tv_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:textColor="#000000"/>
+            android:textColor="#000000" />
 
         <TextView
             android:id="@+id/tv_rssi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:textColor="#000000"/>
+            android:textColor="#000000" />
     </LinearLayout>
 
     <Button
@@ -47,7 +52,31 @@
         android:id="@+id/btn_disconnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/btn_connect"
         android:layout_below="@id/ll_info"
-        android:text="断开"/>
+        android:layout_toRightOf="@id/btn_connect"
+        android:text="断开" />
+
+    <EditText
+        android:id="@+id/edt_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/btn_disconnect"
+        android:background="@drawable/bg_edit"
+        android:scrollbars="vertical" />
+
+    <Button
+        android:id="@+id/btn_write"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edt_content"
+        android:text="写入数据" />
+
+    <Button
+        android:id="@+id/btn_read"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edt_content"
+        android:layout_toRightOf="@id/btn_write"
+        android:text="读取数据" />
+
 </RelativeLayout>

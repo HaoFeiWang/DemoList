@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <!-- 操纵管理蓝牙设置权限，低功耗蓝牙必须声明 -->
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <!-- 经典蓝牙的获取扫描结果权限 6.0以上需要动态权限 -->
+    <!-- 蓝牙的获取扫描结果权限 6.0以上需要动态权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- 相机硬件设备使用功能 -->

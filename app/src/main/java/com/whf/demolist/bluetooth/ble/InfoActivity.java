@@ -7,6 +7,9 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -14,11 +17,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.whf.demolist.R;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -34,10 +39,19 @@ public class InfoActivity extends AppCompatActivity {
 
     private Button btnConnect;
     private Button btnDisconnect;
+    private Button btnWrite;
+    private Button btnRead;
 
+    private EditText edtContent;
+
+    private BluetoothManager bluetoothManager;
     private BluetoothDevice bluetoothDevice;
     private BluetoothGattCallback bluetoothGattCallback;
     private BluetoothGatt bluetoothGatt;
+
+    private BluetoothGattService bluetoothGattService;
+    private BluetoothGattCharacteristic bluetoothGattCharacteristic;
+    private BluetoothGattDescriptor bluetoothGattDescriptor;
 
     private Handler handler;
     private ExecutorService executorService;
@@ -49,6 +63,7 @@ public class InfoActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         bluetoothDevice = intent.getParcelableExtra(Constants.REMOTE_BLUETOOTH);
+        bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
 
         handler = new Handler();
 
@@ -59,11 +74,15 @@ public class InfoActivity extends AppCompatActivity {
     private void initView() {
         btnConnect = findViewById(R.id.btn_connect);
         btnDisconnect = findViewById(R.id.btn_disconnect);
+        btnWrite = findViewById(R.id.btn_write);
+        btnRead = findViewById(R.id.btn_read);
 
         tvName = findViewById(R.id.tv_name);
         tvAddress = findViewById(R.id.tv_address);
         tvState = findViewById(R.id.tv_state);
         tvRssi = findViewById(R.id.tv_rssi);
+
+        edtContent = findViewById(R.id.edt_content);
 
         tvName.setText("名称：" + bluetoothDevice.getName());
         tvAddress.setText("地址：" + bluetoothDevice.getAddress());
@@ -83,6 +102,20 @@ public class InfoActivity extends AppCompatActivity {
                 disconnect();
             }
         });
+
+        btnWrite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                writeData();
+            }
+        });
+
+        btnRead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readData();
+            }
+        });
     }
 
     private void initListener() {
@@ -91,12 +124,13 @@ public class InfoActivity extends AppCompatActivity {
             @Override
             public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
                 Log.d(TAG, "BluetoothGattCallback onConnectionStateChange status = " + status + " newState = " + newState);
-                if (status != BluetoothGatt.GATT_SUCCESS) {
-                    Log.e(TAG, "gatt fail");
+                if (status == 133) {
+                    bluetoothGatt.close();
+                    bluetoothGatt = null;
                     return;
                 }
 
-                executorReadRssiThread();
+//                executorReadRssiThread();
                 switch (newState) {
                     case BluetoothGatt.STATE_CONNECTING:
                         //并未发现此状态
@@ -116,7 +150,6 @@ public class InfoActivity extends AppCompatActivity {
                     case BluetoothGatt.STATE_DISCONNECTED:
                         Log.d(TAG, "断开连接");
                         updateStateText("状态：未连接");
-                        bluetoothGatt.close();
                         break;
                 }
             }
@@ -129,11 +162,11 @@ public class InfoActivity extends AppCompatActivity {
 
             /**
              * 两个默认服务，所以在自定义的时候应该避开这两个UUID
-             * Generic Access（GAP profile）
+             * Generic Access（Generic Attribute Profile 通用属性规范GATT）
              * service：00001801-0000-1000-8000-00805f9b34fb
              * characteristic：00002a05-0000-1000-8000-00805f9b34fb
              *
-             * Generic Attribute (GATT Profile)
+             * Generic Attribute (Generic Access Profile 通用接入规范GAP)
              * service：00001800-0000-1000-8000-00805f9b34fb
              * characteristic：00002a00-0000-1000-8000-00805f9b34fb
              * characteristic：00002a01-0000-1000-8000-00805f9b34fb
@@ -146,15 +179,29 @@ public class InfoActivity extends AppCompatActivity {
                     //获取所有发现的服务
                     List<BluetoothGattService> bluetoothGattServicesList = gatt.getServices();
                     for (BluetoothGattService bluetoothGattService : bluetoothGattServicesList) {
+                        UUID bluetoothGattServiceUuid = bluetoothGattService.getUuid();
                         Log.d(TAG, "bluetoothGattService uuid = " + bluetoothGattService.getUuid());
+                        if (Constants.UUID_SERVICE.equals(bluetoothGattServiceUuid)) {
+                            InfoActivity.this.bluetoothGattService = bluetoothGattService;
+                        }
+
                         //获取该服务中的所有特征
                         List<BluetoothGattCharacteristic> bluetoothGattCharacteristicList = bluetoothGattService.getCharacteristics();
                         for (BluetoothGattCharacteristic bluetoothGattCharacteristic : bluetoothGattCharacteristicList) {
-                            Log.d(TAG, "bluetoothGattCharacteristic uuid = " + bluetoothGattCharacteristic.getUuid());
+                            UUID bluetoothGattCharacteristicUuid = bluetoothGattCharacteristic.getUuid();
+                            Log.d(TAG, "bluetoothGattCharacteristic uuid = " + bluetoothGattCharacteristicUuid);
+                            if (Constants.UUID_CHARACTERISTIC.equals(bluetoothGattCharacteristicUuid)) {
+                                InfoActivity.this.bluetoothGattCharacteristic = bluetoothGattCharacteristic;
+                            }
+
                             //获取该特征中的所有描述
                             List<BluetoothGattDescriptor> bluetoothGattDescriptorList = bluetoothGattCharacteristic.getDescriptors();
                             for (BluetoothGattDescriptor bluetoothGattDescriptor : bluetoothGattDescriptorList) {
-                                Log.d(TAG, "bluetoothGattDescriptor uuid = " + bluetoothGattDescriptor.getUuid());
+                                UUID bluetoothGattDescriptorUuid = bluetoothGattDescriptor.getUuid();
+                                Log.d(TAG, "bluetoothGattDescriptor uuid = " + bluetoothGattDescriptorUuid);
+                                if (Constants.UUID_DESCRIPTOR.equals(bluetoothGattDescriptorUuid)) {
+                                    InfoActivity.this.bluetoothGattDescriptor = bluetoothGattDescriptor;
+                                }
                             }
                         }
                     }
@@ -219,12 +266,16 @@ public class InfoActivity extends AppCompatActivity {
         //每个设备所能拥有的Gatt连接是有限个数的所以在断开连接时应该关闭释放Gatt连接，否则会出现133错误
         //connect是进行重连，connectGatt是首次连接
         if (bluetoothGatt != null) {
-            bluetoothGatt.connect();
+            int state = bluetoothManager.getConnectionState(bluetoothDevice, BluetoothGatt.GATT);
+            Log.d(TAG, "bluetooth gatt state = " + state);
+            if (state == BluetoothGatt.STATE_DISCONNECTED) {
+                bluetoothGatt.connect();
+            }
+        } else {
+            bluetoothGatt = bluetoothDevice.connectGatt(this,
+                    false, bluetoothGattCallback);
         }
-        bluetoothGatt = bluetoothDevice.connectGatt(this,
-                false, bluetoothGattCallback);
     }
-
 
     private void disconnect() {
         if (bluetoothGatt == null) {
@@ -239,13 +290,6 @@ public class InfoActivity extends AppCompatActivity {
             executorService = Executors.newSingleThreadExecutor();
         }
 
-        //判断当前线程池活动的线程数
-        int activeThreadCount = ((ThreadPoolExecutor) executorService).getActiveCount();
-        if (activeThreadCount > 0) {
-            Log.d(TAG, "read rssi thread is active!");
-            return;
-        }
-
         executorService.execute(new Runnable() {
             @Override
             public void run() {
@@ -255,7 +299,7 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void readRssi() {
-        while (bluetoothGatt!=null && bluetoothGatt.getConnectionState(bluetoothDevice) == BluetoothGatt.STATE_CONNECTED) {
+        while (bluetoothManager.getConnectionState(bluetoothDevice, BluetoothGatt.GATT) == BluetoothGatt.STATE_CONNECTED) {
             //断开连接后会获取rssi值会没有回调
             bluetoothGatt.readRemoteRssi();
             try {
@@ -264,6 +308,25 @@ public class InfoActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void readData() {
+
+    }
+
+    private void writeData() {
+        String writeContent = edtContent.getText().toString();
+        Log.d(TAG, "write data = " + writeContent);
+        if (bluetoothGatt != null && bluetoothGattCharacteristic != null) {
+            bluetoothGatt.setCharacteristicNotification(bluetoothGattCharacteristic, true);
+            bluetoothGattCharacteristic.setValue(writeContent);
+            //设置回复形式
+            bluetoothGattCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
+            bluetoothGatt.writeCharacteristic(bluetoothGattCharacteristic);
+        }
+
+//        bluetoothGattDescriptor.setValue(writeContent.getBytes());
+//        bluetoothGatt.writeDescriptor(bluetoothGattDescriptor);
     }
 
     private void updateStateText(String msg) {
