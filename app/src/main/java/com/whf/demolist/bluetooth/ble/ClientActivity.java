@@ -342,6 +342,8 @@ public class ClientActivity extends AppCompatActivity {
         BluetoothGattServer server = bluetoothManager.openGattServer(this, serverCallback);
         BluetoothGattService service = new BluetoothGattService(Constants.UUID_SERVICE,
                 BluetoothGattService.SERVICE_TYPE_PRIMARY);
+
+        //这里要设置特征的权限，否则会出现无法写数据或无法读数据
         BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(
                 Constants.UUID_CHARACTERISTIC, BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE,
                 BluetoothGattCharacteristic.PERMISSION_WRITE | BluetoothGattCharacteristic.PERMISSION_READ);
@@ -349,7 +351,7 @@ public class ClientActivity extends AppCompatActivity {
                 BluetoothGattDescriptor.PERMISSION_READ);
 
         //向特征中添加描述符，如果有描述符就不能写
-//        characteristic.addDescriptor(descriptor);
+        //characteristic.addDescriptor(descriptor);
         service.addCharacteristic(characteristic);
         //添加成功会回调BluetoothGattServerCallback的onServiceAdded方法
         server.clearServices();
