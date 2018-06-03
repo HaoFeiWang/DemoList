@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -56,6 +55,10 @@ public class ClientActivity extends AppCompatActivity {
     private static final int IDLE = 0x00000000;
     private static final int PENDING_SCAN = 0x00000001;
     private static final int PENDING_BROADCAST = 0x00000010;
+
+    private static final UUID UUID_SERVICE = UUID.fromString("00000001-0000-1000-8000-00805f9b34fb");
+    private static final UUID UUID_CHARACTERISTIC = UUID.fromString("00000010-0000-1000-8000-00805f9b34fb");
+    private static final UUID UUID_DESCRIPTOR = UUID.fromString("00000100-0000-1000-8000-00805f9b34fb");
 
     private Button btnScan;
     private Button btnBroadcast;
@@ -345,8 +348,12 @@ public class ClientActivity extends AppCompatActivity {
 
         //这里要设置特征的权限，否则会出现无法写数据或无法读数据
         BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(
-                Constants.UUID_CHARACTERISTIC, BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE,
-                BluetoothGattCharacteristic.PERMISSION_WRITE | BluetoothGattCharacteristic.PERMISSION_READ);
+                Constants.UUID_CHARACTERISTIC,
+                BluetoothGattCharacteristic.PROPERTY_READ |
+                        BluetoothGattCharacteristic.PROPERTY_WRITE,
+                BluetoothGattCharacteristic.PERMISSION_WRITE |
+                        BluetoothGattCharacteristic.PERMISSION_READ);
+
         BluetoothGattDescriptor descriptor = new BluetoothGattDescriptor(Constants.UUID_DESCRIPTOR,
                 BluetoothGattDescriptor.PERMISSION_READ);
 
@@ -359,26 +366,36 @@ public class ClientActivity extends AppCompatActivity {
     }
 
     /**
-     * 创建广播设置
+     * 创建广播设置，根据需求自行设定，若不设定则采用默认的
      */
     private AdvertiseSettings buildAdvertiseSettings() {
         AdvertiseSettings.Builder builder = new AdvertiseSettings.Builder()
+                //设置广播模式：低功耗、平衡、低延时，广播间隔时间依次越来越短
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
+                //设置是否可以连接，一般不可连接广播应用在iBeacon设备上
                 .setConnectable(true)
-                .setTimeout(0)
+                //设置广播的最长时间，最大时长为LIMITED_ADVERTISING_MAX_MILLIS(180秒)
+                .setTimeout(10*1000)
+                //设置广播的信号强度 ADVERTISE_TX_POWER_ULTRA_LOW, ADVERTISE_TX_POWER_LOW,
+                //ADVERTISE_TX_POWER_MEDIUM, ADVERTISE_TX_POWER_HIGH 信号强度依次增强
                 .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH);
+
         return builder.build();
     }
 
     /**
-     * 创建广播数据
+     * 创建广播数据，根据需求自行定制否则采用默认的
      */
     private AdvertiseData buildAdvertiseData() {
         AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder()
-                //参数一为厂家ID，参数二为厂家的扩展值（byte[]）,一般不用设置否则会出现扫描不到
-//                .addManufacturerData(0x34, new byte[]{0x56})
-                .setIncludeDeviceName(true)
-                .setIncludeTxPowerLevel(true);
+                //添加厂家信息，第一个参数为厂家ID(不足两个字节会自动补0，例如这里为0x34，实际数据则为34,00)
+                .addManufacturerData(0x34, new byte[]{0x56})
+                //添加服务进行广播，即对外广播本设备拥有的服务
+                //.addServiceData();
+                //是否广播信号强度
+                .setIncludeTxPowerLevel(true)
+                //是否广播设备名称
+                .setIncludeDeviceName(true);
 
         return dataBuilder.build();
     }
