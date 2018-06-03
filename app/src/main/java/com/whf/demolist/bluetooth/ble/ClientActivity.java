@@ -223,7 +223,6 @@ public class ClientActivity extends AppCompatActivity {
 
         //扫描时的设置
         ScanSettings.Builder settingBuild = new ScanSettings.Builder();
-        //这种扫描方式占用资源比较高，建议当应用处于前台时使用该模式
         settingBuild.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
 
         Log.d(TAG, "start scan!");
@@ -357,8 +356,7 @@ public class ClientActivity extends AppCompatActivity {
         BluetoothGattDescriptor descriptor = new BluetoothGattDescriptor(Constants.UUID_DESCRIPTOR,
                 BluetoothGattDescriptor.PERMISSION_READ);
 
-        //向特征中添加描述符，如果有描述符就不能写
-        //characteristic.addDescriptor(descriptor);
+        characteristic.addDescriptor(descriptor);
         service.addCharacteristic(characteristic);
         //添加成功会回调BluetoothGattServerCallback的onServiceAdded方法
         server.clearServices();
@@ -389,9 +387,10 @@ public class ClientActivity extends AppCompatActivity {
     private AdvertiseData buildAdvertiseData() {
         AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder()
                 //添加厂家信息，第一个参数为厂家ID(不足两个字节会自动补0，例如这里为0x34，实际数据则为34,00)
+                //一般情况下无需设置，否则会出现无法被其他设备扫描到的情况
                 .addManufacturerData(0x34, new byte[]{0x56})
                 //添加服务进行广播，即对外广播本设备拥有的服务
-                //.addServiceData();
+//                .addServiceData();
                 //是否广播信号强度
                 .setIncludeTxPowerLevel(true)
                 //是否广播设备名称
