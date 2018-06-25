@@ -11,8 +11,8 @@ import android.view.ViewGroup;
  * Created by WHF on 2017/11/5.
  */
 
-public abstract class BaseMvpFragment<V extends BaseMvpView, P extends BaseMvpPresent<V>>
-        extends Fragment implements BaseMvpView {
+public abstract class MvpBaseFragment<M extends IModel,V extends IView, P extends MvpBasePresent<M,V>>
+        extends Fragment implements IView {
 
     protected P present;
 
@@ -37,10 +37,10 @@ public abstract class BaseMvpFragment<V extends BaseMvpView, P extends BaseMvpPr
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         if (present != null){
             present.detachView();
         }
-        super.onDestroy();
     }
 
     public abstract P createPresent();

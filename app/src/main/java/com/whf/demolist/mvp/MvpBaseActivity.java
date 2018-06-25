@@ -8,8 +8,8 @@ import android.support.v7.app.AppCompatActivity;
  * Created by WHF on 2017/11/5.
  */
 
-public abstract class BaseMvpActivity<V extends BaseMvpView,P extends BaseMvpPresent<V>>
-        extends AppCompatActivity implements BaseMvpView {
+public abstract class MvpBaseActivity<M extends IModel,V extends IView,P extends MvpBasePresent<M,V>>
+        extends AppCompatActivity implements IView {
 
     protected P present;
 
@@ -26,10 +26,10 @@ public abstract class BaseMvpActivity<V extends BaseMvpView,P extends BaseMvpPre
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         if (present != null) {
             present.detachView();
         }
-        super.onDestroy();
     }
 
     public abstract P createPresent();
