@@ -12,13 +12,10 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.whf.demolist.R
 
+
 class VideoActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
     private val TAG = "Video_Log"
-    private val DATA_SOURCE = arrayOf(
-            "http://baobab.kaiyanapp.com/api/v1/playUrl?vid=110661&resourceType=video&editionType=default&source=aliyun",
-            "http://baobab.kaiyanapp.com/api/v1/playUrl?vid=111871&resourceType=video&editionType=default&source=aliyun"
-    )
 
     private lateinit var surfaceView: SurfaceView
     private lateinit var tvLoading: TextView
@@ -26,8 +23,7 @@ class VideoActivity : AppCompatActivity(), SurfaceHolder.Callback {
     private lateinit var surfaceHolder: SurfaceHolder
     private lateinit var mediaPlayer: MediaPlayer
 
-    private var curPlayingUrlIndex = 0
-
+    private var url = ""
     private var isPause = false
     private var isSurfaceCreated = false
 
@@ -50,14 +46,16 @@ class VideoActivity : AppCompatActivity(), SurfaceHolder.Callback {
     }
 
     private fun initData() {
+        url = intent.getStringExtra(INTENT_URL)
         mediaPlayer = MediaPlayer()
-        mediaPlayer.setDataSource(DATA_SOURCE[curPlayingUrlIndex])
+        mediaPlayer.setDataSource(url)
         mediaPlayer.setOnPreparedListener {
             Log.d(TAG, "media player prepared!")
             tvLoading.visibility = View.GONE
             it.start()
         }
 
+        //设置显示尺寸
         mediaPlayer.setOnVideoSizeChangedListener { mp, width, height ->
             if (width != 0 && height != 0) {
                 Log.d(TAG, "video width = $width height = $height")
@@ -101,6 +99,8 @@ class VideoActivity : AppCompatActivity(), SurfaceHolder.Callback {
     override fun surfaceCreated(holder: SurfaceHolder?) {
         Log.d(TAG, "surface created!")
         isSurfaceCreated = true
+
+        //必须在Surface已经创建好了才能设置
         mediaPlayer.setDisplay(surfaceHolder)
 
         if (isPause) {
@@ -117,7 +117,7 @@ class VideoActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
     override fun onPause() {
         super.onPause()
-        if(mediaPlayer.isPlaying){
+        if (mediaPlayer.isPlaying) {
             isPause = true
             mediaPlayer.pause()
             Log.d(TAG, "pause media player!")
@@ -125,8 +125,8 @@ class VideoActivity : AppCompatActivity(), SurfaceHolder.Callback {
     }
 
     /**
-     * 页面从前台到后台会执行 onPause ->onStop 此时Surface会被销毁，
-     * 再一次从后台 到前台时需要 重新创建Surface
+     * 页面从前台到后台会执行 onPause ->onStop 此时Surface会被销毁（大概率）
+     * 再一次从后台 到前台时需要 重新创建Surface，否则就会崩溃
      */
     override fun onStart() {
         super.onStart()
@@ -139,5 +139,6 @@ class VideoActivity : AppCompatActivity(), SurfaceHolder.Callback {
         isPause = false
         mediaPlayer.start()
     }
+
 
 }

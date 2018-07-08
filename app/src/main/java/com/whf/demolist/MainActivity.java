@@ -13,6 +13,7 @@ import com.whf.demolist.notification.NotificationActivity;
 import com.whf.demolist.qrcode.QrCodeActivity;
 import com.whf.demolist.surfaceview.SurfaceViewActivity;
 import com.whf.demolist.video.VideoActivity;
+import com.whf.demolist.video.VideoInfoActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -79,8 +80,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_notification:
                 startActivity(new Intent(this, NotificationActivity.class));
+                break;
             case R.id.btn_video:
-                startActivity(new Intent(this, VideoActivity.class));
+                startActivity(new Intent(this, VideoInfoActivity.class));
             default:
                 break;
         }

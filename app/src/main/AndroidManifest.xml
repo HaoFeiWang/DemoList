@@ -72,7 +72,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".video.VideoActivity"></activity>
+        <activity android:name=".video.VideoActivity" />
+        <activity android:name=".video.VideoInfoActivity"></activity>
     </application>
 
 </manifest>

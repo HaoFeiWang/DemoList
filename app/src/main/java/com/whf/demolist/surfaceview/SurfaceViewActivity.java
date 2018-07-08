@@ -56,7 +56,7 @@ public class SurfaceViewActivity extends AppCompatActivity implements SurfaceHol
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus){
+        if (hasFocus) {
             int[] location = new int[2];
             drawingBoard.getLocationOnScreen(location);
             actionBarHeight = location[1];
@@ -142,7 +142,7 @@ public class SurfaceViewActivity extends AppCompatActivity implements SurfaceHol
         switch (event.getAction()) {
             case ACTION_DOWN:
                 Log.i(TAG, "drawing thread state = " + drawingThread.getState());
-                if (!drawingThread.isAlive()){
+                if (!drawingThread.isAlive()) {
                     isDrawing = true;
                     drawingThread.start();
                 }
@@ -165,4 +165,6 @@ public class SurfaceViewActivity extends AppCompatActivity implements SurfaceHol
         }
         return super.onTouchEvent(event);
     }
+
+
 }
