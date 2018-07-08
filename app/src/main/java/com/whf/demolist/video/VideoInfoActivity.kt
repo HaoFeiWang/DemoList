@@ -43,13 +43,13 @@ class VideoInfoActivity : AppCompatActivity() {
         }
 
         ivVideoPreviewOne.setOnClickListener {
-            val intent = Intent(this,VideoActivity::class.java)
+            val intent = Intent(this,VideoPlayerActivity::class.java)
             intent.putExtra(INTENT_URL,DATA_SOURCE[0])
             startActivity(intent)
         }
 
         ivVideoPreviewTwo.setOnClickListener {
-            val intent = Intent(this,VideoActivity::class.java)
+            val intent = Intent(this,VideoViewActivity::class.java)
             intent.putExtra(INTENT_URL,DATA_SOURCE[1])
             startActivity(intent)
         }

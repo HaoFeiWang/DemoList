@@ -13,7 +13,7 @@ import android.widget.TextView
 import com.whf.demolist.R
 
 
-class VideoActivity : AppCompatActivity(), SurfaceHolder.Callback {
+class VideoPlayerActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
     private val TAG = "Video_Log"
 
@@ -33,7 +33,7 @@ class VideoActivity : AppCompatActivity(), SurfaceHolder.Callback {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        setContentView(R.layout.activity_video)
+        setContentView(R.layout.activity_video_player)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
         initView()
@@ -139,6 +139,5 @@ class VideoActivity : AppCompatActivity(), SurfaceHolder.Callback {
         isPause = false
         mediaPlayer.start()
     }
-
-
 }
+

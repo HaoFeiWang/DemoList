@@ -12,7 +12,6 @@ import com.whf.demolist.camera.CameraActivity;
 import com.whf.demolist.notification.NotificationActivity;
 import com.whf.demolist.qrcode.QrCodeActivity;
 import com.whf.demolist.surfaceview.SurfaceViewActivity;
-import com.whf.demolist.video.VideoActivity;
 import com.whf.demolist.video.VideoInfoActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
