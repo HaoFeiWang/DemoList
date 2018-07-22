@@ -26,13 +26,11 @@ class VideoViewActivity : AppCompatActivity() {
     }
 
     private fun initData() {
-        val url = intent.getStringExtra(INTENT_URL)
-        videoView.setVideoURI(Uri.parse(url))
-
         val controller = MediaController(this)
         videoView.setMediaController(controller)
-        controller.setAnchorView(videoView)
 
+        val url = intent.getStringExtra(INTENT_URL)
+        videoView.setVideoURI(Uri.parse(url))
         videoView.start()
     }
 }
