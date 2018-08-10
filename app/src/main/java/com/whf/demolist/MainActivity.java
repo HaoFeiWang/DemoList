@@ -12,16 +12,9 @@ import com.whf.demolist.camera.CameraActivity;
 import com.whf.demolist.notification.NotificationActivity;
 import com.whf.demolist.qrcode.QrCodeActivity;
 import com.whf.demolist.surfaceview.SurfaceViewActivity;
+import com.whf.demolist.wifi.WIFIActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private Button btnAnim;
-    private Button btnQrcode;
-    private Button btnCamera;
-    private Button btnSurface;
-    private Button btnBluetooth;
-    private Button btnBinder;
-    private Button btnNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,28 +22,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         initView();
-        initListener();
     }
 
     private void initView() {
-        btnAnim = findViewById(R.id.btn_anim);
-        btnQrcode = findViewById(R.id.btn_qrcode);
-        btnCamera = findViewById(R.id.btn_camera);
-        btnSurface = findViewById(R.id.btn_surface);
-        btnBluetooth = findViewById(R.id.btn_bluetooth);
-        btnBinder = findViewById(R.id.btn_binder);
-        btnNotification = findViewById(R.id.btn_notification);
+        findViewById(R.id.btn_anim).setOnClickListener(this);
+        findViewById(R.id.btn_qrcode).setOnClickListener(this);
+        findViewById(R.id.btn_camera).setOnClickListener(this);
+        findViewById(R.id.btn_surface).setOnClickListener(this);
+        findViewById(R.id.btn_bluetooth).setOnClickListener(this);
+        findViewById(R.id.btn_binder).setOnClickListener(this);
+        findViewById(R.id.btn_notification).setOnClickListener(this);
+        findViewById(R.id.btn_wifi).setOnClickListener(this);
     }
 
-    private void initListener() {
-        btnAnim.setOnClickListener(this);
-        btnQrcode.setOnClickListener(this);
-        btnCamera.setOnClickListener(this);
-        btnSurface.setOnClickListener(this);
-        btnBluetooth.setOnClickListener(this);
-        btnBinder.setOnClickListener(this);
-        btnNotification.setOnClickListener(this);
-    }
 
     @Override
     public void onClick(View view) {
@@ -75,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_notification:
                 startActivity(new Intent(this, NotificationActivity.class));
+            case R.id.btn_wifi:
+                startActivity(new Intent(this, WIFIActivity.class));
             default:
                 break;
         }

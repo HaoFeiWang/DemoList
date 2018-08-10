@@ -45,5 +45,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="通知栏"/>
+
+        <Button
+            android:id="@+id/btn_wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WIFI管理"/>
     </LinearLayout>
 </ScrollView>
