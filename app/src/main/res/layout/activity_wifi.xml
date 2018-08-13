@@ -6,28 +6,47 @@
     android:padding="10dp"
     tools:context="com.whf.demolist.wifi.WifiActivity">
 
-    <TextView
-        android:id="@+id/tv_change_wifi"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ll_btn"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f5b5b5"
-        android:padding="15dp"
-        android:text="打开WIFI" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_scan_wifi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:background="#f5b5b5"
-        android:padding="15dp"
-        android:text="扫描WIFI" />
+        <TextView
+            android:id="@+id/tv_change_wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#f5b5b5"
+            android:layout_marginEnd="10dp"
+            android:padding="15dp"
+            android:text="打开WIFI" />
+
+        <TextView
+            android:id="@+id/tv_scan_wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#f5b5b5"
+            android:layout_marginEnd="10dp"
+            android:padding="15dp"
+            android:text="扫描WIFI" />
+
+        <TextView
+            android:id="@+id/tv_come_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#f5b5b5"
+            android:layout_marginEnd="10dp"
+            android:padding="15dp"
+            android:text="进入聊天" />
+
+    </LinearLayout>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_wifi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_change_wifi"
+        android:layout_below="@id/ll_btn"
         android:layout_marginTop="10dp" />
 
 </RelativeLayout>

@@ -1,16 +1,21 @@
 package com.whf.demolist.wifi;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.whf.demolist.R;
@@ -29,6 +34,9 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView rvWifi;
     private WifiAdapter wifiAdapter;
 
+    private AlertDialog alertDialog;
+    private WifiReceiver wifiReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,18 +50,75 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
         tvChangeWifi = findViewById(R.id.tv_change_wifi);
         tvChangeWifi.setOnClickListener(this);
         findViewById(R.id.tv_scan_wifi).setOnClickListener(this);
+        findViewById(R.id.tv_come_chat).setOnClickListener(this);
 
         rvWifi = findViewById(R.id.rv_wifi);
         rvWifi.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         wifiAdapter = new WifiAdapter(this, new ArrayList<>());
-        wifiAdapter.setOnItemClickListener(() -> {
-            connectWifi();
+        wifiAdapter.setOnItemClickListener(new WifiAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClickListener(String ssid, String type) {
+                connectWifi(ssid, type);
+            }
+
+            @Override
+            public void onRemoveClickListener() {
+
+            }
         });
+
         rvWifi.setAdapter(wifiAdapter);
     }
 
-    private void connectWifi() {
+    private void connectWifi(String ssid, String type) {
+        List<WifiConfiguration> configurationList = wifiManager.getConfiguredNetworks();
+        for (int i = 0; i < configurationList.size(); i++) {
+            WifiConfiguration wifiConfiguration = configurationList.get(i);
+            if (wifiConfiguration.SSID.equals("\"" + ssid + "\"")) {
+                //必须断开已连接的Wifi
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                if (wifiInfo != null) {
+                    Log.d(TAG, "current connected wifi = " + wifiInfo.getSSID());
+                    if (wifiInfo.getSSID().equals("\"" + ssid + "\"")) {
+                        return;
+                    }
+                    wifiManager.disableNetwork(wifiInfo.getNetworkId());
+                }
 
+                boolean enableResult = wifiManager.enableNetwork(wifiConfiguration.networkId, true);
+                wifiManager.reconnect();
+                Log.d(TAG, "wifi configuration contains " + ssid + " enable result = " + enableResult);
+                return;
+            }
+        }
+
+        if (type.equals("wep") || type.equals("wpa")) {
+            View view = LayoutInflater.from(this).inflate(R.layout.layout_wifi_dialog, null);
+            EditText tvPassword = view.findViewById(R.id.tv_password);
+            view.findViewById(R.id.tv_ok).setOnClickListener(v -> {
+                String password = tvPassword.getText().toString();
+                if (alertDialog != null) {
+                    alertDialog.cancel();
+                }
+
+                connect(ssid, type, password);
+            });
+
+            alertDialog = new AlertDialog.Builder(this)
+                    .setView(view)
+                    .show();
+        } else {
+            connect(ssid, type, "");
+        }
+    }
+
+    private void connect(String ssid, String type, String password) {
+        WifiConfiguration wifiConfiguration = createConfiguration(ssid, type, password);
+        int networkId = wifiManager.addNetwork(wifiConfiguration);
+        Log.d(TAG, "connect network id = " + networkId);
+        if (networkId > 0) {
+            wifiManager.enableNetwork(networkId, true);
+        }
     }
 
     private void initData() {
@@ -62,9 +127,11 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        WifiReceiver wifiReceiver = new WifiReceiver();
+        intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        wifiReceiver = new WifiReceiver();
         wifiReceiver.setWifiCallback(this);
-        getApplicationContext().registerReceiver(wifiReceiver, intentFilter);
+        registerReceiver(wifiReceiver, intentFilter);
     }
 
     @Override
@@ -75,6 +142,10 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.tv_scan_wifi:
                 scanWifi();
+                break;
+            case R.id.tv_come_chat:
+                startActivity(new Intent(this, WifiChatActivity.class));
+                finish();
                 break;
         }
     }
@@ -134,6 +205,16 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, "receiver scan result!");
         List<ScanResult> scanResultList = wifiManager.getScanResults();
         wifiAdapter.setWifiList(filterScanResult(scanResultList));
+    }
+
+    @Override
+    public void onNetworkStateChanged() {
+        Log.d(TAG, "on network state changed !");
+    }
+
+    @Override
+    public void onSupplicantStateChanged() {
+        Log.d(TAG, "on supplicant state changed!");
     }
 
     private void logWifiState(String prefix, int state) {
@@ -205,13 +286,10 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 创建WifiConfiguration，使用它可以获取到networkId
      */
-    public WifiConfiguration createConfiguration() {
-        String SSID = "...";
-        String encryptionType = "...";
-        String password = "...";
+    public WifiConfiguration createConfiguration(String ssid, String type, String password) {
         WifiConfiguration config = new WifiConfiguration();
-        config.SSID = "\"" + SSID + "\"";
-        if (encryptionType.contains("wep")) {
+        config.SSID = "\"" + ssid + "\"";
+        if (type.contains("wep")) {
             //wep加密方式，special handling according to password length is a must for wep
             int i = password.length();
             if (((i == 10 || (i == 26) || (i == 58))) && (password.matches("[0-9A-Fa-f]*"))) {
@@ -224,7 +302,7 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
             config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
             config.wepTxKeyIndex = 0;
-        } else if (encryptionType.contains("wpa")) {
+        } else if (type.contains("wpa")) {
             //wpa加密方式
             config.preSharedKey = "\"" + password + "\"";
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
@@ -233,5 +311,13 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
         }
         return config;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (wifiReceiver != null) {
+            unregisterReceiver(wifiReceiver);
+        }
     }
 }

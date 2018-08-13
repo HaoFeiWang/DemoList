@@ -24,7 +24,7 @@ public class WifiReceiver extends BroadcastReceiver {
             return;
         }
         if (wifiCallback == null) {
-            Log.e(TAG,"wifi callback is null!");
+            Log.e(TAG, "wifi callback is null!");
             return;
         }
 
@@ -35,6 +35,10 @@ public class WifiReceiver extends BroadcastReceiver {
             case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
                 wifiCallback.onScanResult();
                 break;
+            case WifiManager.SUPPLICANT_STATE_CHANGED_ACTION:
+                break;
+            case WifiManager.NETWORK_STATE_CHANGED_ACTION:
+                break;
         }
     }
 
@@ -44,6 +48,11 @@ public class WifiReceiver extends BroadcastReceiver {
 
     public interface WifiCallback {
         void onStateChanged();
+
         void onScanResult();
+
+        void onNetworkStateChanged();
+
+        void onSupplicantStateChanged();
     }
 }

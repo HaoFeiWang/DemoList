@@ -39,15 +39,15 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiHolder> {
     @Override
     public void onBindViewHolder(WifiHolder holder, int position) {
         ScanResult scanResult = wifiList.get(position);
-        Log.d(TAG, "ssid = " + scanResult.SSID + " bssid = " + scanResult.BSSID + " level = " + scanResult.level);
 
         holder.tvSsid.setText(scanResult.SSID);
         holder.tvRssi.setText(String.valueOf(scanResult.level));
-        holder.tvSecurity.setText(getSecurity(scanResult));
+        String securityType = getSecurity(scanResult);
+        holder.tvSecurity.setText(securityType);
 
         holder.itemView.setOnClickListener(v -> {
-            if (onItemClickListener!=null){
-                onItemClickListener.onItemClickListener();
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClickListener(scanResult.SSID, securityType);
             }
         });
     }
@@ -61,13 +61,10 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiHolder> {
         String capabilities = scanResult.capabilities;
 
         if (capabilities.contains("WPA") || capabilities.contains("wpa")) {
-            Log.i(TAG, "security is wpa !");
             return "wpa";
         } else if (capabilities.contains("WEP") || capabilities.contains("wep")) {
-            Log.i(TAG, "security is wep !");
             return "wep";
         } else {
-            Log.i(TAG, "no security !");
             return "non";
         }
     }
@@ -82,6 +79,8 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiHolder> {
     }
 
     interface OnItemClickListener {
-        void onItemClickListener();
+        void onItemClickListener(String ssid, String type);
+
+        void onRemoveClickListener();
     }
 }

@@ -82,8 +82,9 @@
 
         <activity android:name=".video.VideoPlayerActivity" />
         <activity android:name=".video.VideoInfoActivity" />
-        <activity android:name=".video.VideoViewActivity"></activity>
-        <activity android:name=".wifi.WifiActivity"></activity>
+        <activity android:name=".video.VideoViewActivity" />
+        <activity android:name=".wifi.WifiActivity" />
+        <activity android:name=".wifi.WifiChatActivity" />
     </application>
 
 </manifest>
