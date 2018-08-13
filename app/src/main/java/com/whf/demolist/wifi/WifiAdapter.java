@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.whf.demolist.R;
 
@@ -24,6 +25,7 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiHolder> {
     private LayoutInflater layoutInflater;
     private List<ScanResult> wifiList;
     private OnItemClickListener onItemClickListener;
+    private String connectedSSID;
 
     public WifiAdapter(Context context, List<ScanResult> wifiList) {
         this.layoutInflater = LayoutInflater.from(context);
@@ -45,9 +47,13 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiHolder> {
         String securityType = getSecurity(scanResult);
         holder.tvSecurity.setText(securityType);
 
+        if (("\"" + scanResult.SSID + "\"").equals(connectedSSID)) {
+            holder.tvState.setText("已连接");
+        }
+
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
-                onItemClickListener.onItemClickListener(scanResult.SSID, securityType);
+                onItemClickListener.onItemClickListener(holder.tvState, scanResult.SSID, securityType);
             }
         });
     }
@@ -78,8 +84,12 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiHolder> {
         this.onItemClickListener = onItemClickListener;
     }
 
+    public void setConnectedWifi(String ssid) {
+        this.connectedSSID = ssid;
+    }
+
     interface OnItemClickListener {
-        void onItemClickListener(String ssid, String type);
+        void onItemClickListener(TextView tvState, String ssid, String type);
 
         void onRemoveClickListener();
     }

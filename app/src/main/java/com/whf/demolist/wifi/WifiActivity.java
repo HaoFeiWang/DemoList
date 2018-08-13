@@ -3,6 +3,7 @@ package com.whf.demolist.wifi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
@@ -30,6 +31,7 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
 
     private WifiManager wifiManager;
     private TextView tvChangeWifi;
+    private TextView tvState;
 
     private RecyclerView rvWifi;
     private WifiAdapter wifiAdapter;
@@ -57,7 +59,8 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
         wifiAdapter = new WifiAdapter(this, new ArrayList<>());
         wifiAdapter.setOnItemClickListener(new WifiAdapter.OnItemClickListener() {
             @Override
-            public void onItemClickListener(String ssid, String type) {
+            public void onItemClickListener(TextView tvState, String ssid, String type) {
+                WifiActivity.this.tvState = tvState;
                 connectWifi(ssid, type);
             }
 
@@ -208,8 +211,29 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onNetworkStateChanged() {
-        Log.d(TAG, "on network state changed !");
+    public void onNetworkStateChanged(NetworkInfo.DetailedState state) {
+        Log.d(TAG, "on network state changed = " + state);
+
+        if (tvState == null) {
+            Log.d(TAG,"TextView is null!");
+            return;
+        }
+
+        switch (state) {
+            case CONNECTING:
+                tvState.setText("正在连接...");
+                break;
+            case AUTHENTICATING:
+                tvState.setText("正在认证...");
+                break;
+            case OBTAINING_IPADDR:
+                tvState.setText("正在获取IP...");
+                break;
+            case CONNECTED:
+                tvState.setText("已连接");
+                break;
+        }
+
     }
 
     @Override

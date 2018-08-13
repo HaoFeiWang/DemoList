@@ -7,22 +7,30 @@
         android:id="@+id/tv_ssid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/tv_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
+        android:layout_toStartOf="@+id/tv_rssi" />
 
     <TextView
         android:id="@+id/tv_rssi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_marginEnd="10dp"
-        android:layout_toStartOf="@+id/tv_security"
-        android:layout_centerVertical="true"/>
+        android:layout_toStartOf="@+id/tv_security" />
 
     <TextView
         android:id="@+id/tv_security"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true" />
 
     <View
         android:layout_width="match_parent"

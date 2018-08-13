@@ -15,11 +15,13 @@ public class WifiHolder extends RecyclerView.ViewHolder {
     TextView tvSsid;
     TextView tvRssi;
     TextView tvSecurity;
+    TextView tvState;
 
     public WifiHolder(View itemView) {
         super(itemView);
         tvSsid = itemView.findViewById(R.id.tv_ssid);
         tvRssi = itemView.findViewById(R.id.tv_rssi);
         tvSecurity = itemView.findViewById(R.id.tv_security);
+        tvState = itemView.findViewById(R.id.tv_state);
     }
 }

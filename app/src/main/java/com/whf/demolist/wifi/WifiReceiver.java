@@ -3,6 +3,7 @@ package com.whf.demolist.wifi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
@@ -32,12 +33,16 @@ public class WifiReceiver extends BroadcastReceiver {
             case WifiManager.WIFI_STATE_CHANGED_ACTION:
                 wifiCallback.onStateChanged();
                 break;
-            case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
-                wifiCallback.onScanResult();
+            case WifiManager.NETWORK_STATE_CHANGED_ACTION:
+                NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                NetworkInfo.DetailedState state = info.getDetailedState();
+                wifiCallback.onNetworkStateChanged(state);
                 break;
             case WifiManager.SUPPLICANT_STATE_CHANGED_ACTION:
+                wifiCallback.onSupplicantStateChanged();
                 break;
-            case WifiManager.NETWORK_STATE_CHANGED_ACTION:
+            case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
+                wifiCallback.onScanResult();
                 break;
         }
     }
@@ -51,7 +56,7 @@ public class WifiReceiver extends BroadcastReceiver {
 
         void onScanResult();
 
-        void onNetworkStateChanged();
+        void onNetworkStateChanged(NetworkInfo.DetailedState state);
 
         void onSupplicantStateChanged();
     }
