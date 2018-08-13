@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class WIFIActivity extends AppCompatActivity implements View.OnClickListener, WifiReceiver.WifiCallback {
+public class WifiActivity extends AppCompatActivity implements View.OnClickListener, WifiReceiver.WifiCallback {
 
-    private static final String TAG = "WIFI_TEST_" + WIFIActivity.class.getSimpleName();
+    private static final String TAG = "WIFI_TEST_" + WifiActivity.class.getSimpleName();
 
     private WifiManager wifiManager;
     private TextView tvChangeWifi;

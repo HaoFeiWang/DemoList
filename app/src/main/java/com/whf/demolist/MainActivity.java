@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 
 import com.whf.demolist.anim.AnimActivity;
 import com.whf.demolist.bluetooth.ble.ClientActivity;
@@ -12,7 +11,7 @@ import com.whf.demolist.camera.CameraActivity;
 import com.whf.demolist.notification.NotificationActivity;
 import com.whf.demolist.qrcode.QrCodeActivity;
 import com.whf.demolist.surfaceview.SurfaceViewActivity;
-import com.whf.demolist.wifi.WIFIActivity;
+import com.whf.demolist.wifi.WifiActivity;
 import com.whf.demolist.video.VideoInfoActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_notification:
                 startActivity(new Intent(this, NotificationActivity.class));
             case R.id.btn_wifi:
-                startActivity(new Intent(this, WIFIActivity.class));
+                startActivity(new Intent(this, WifiActivity.class));
                 break;
             case R.id.btn_video:
                 startActivity(new Intent(this, VideoInfoActivity.class));
