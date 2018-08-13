@@ -13,6 +13,7 @@ import com.whf.demolist.notification.NotificationActivity;
 import com.whf.demolist.qrcode.QrCodeActivity;
 import com.whf.demolist.surfaceview.SurfaceViewActivity;
 import com.whf.demolist.wifi.WIFIActivity;
+import com.whf.demolist.video.VideoInfoActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_binder).setOnClickListener(this);
         findViewById(R.id.btn_notification).setOnClickListener(this);
         findViewById(R.id.btn_wifi).setOnClickListener(this);
+        findViewById(R.id.btn_video).setOnClickListener(this);
     }
 
 
@@ -61,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, NotificationActivity.class));
             case R.id.btn_wifi:
                 startActivity(new Intent(this, WIFIActivity.class));
+                break;
+            case R.id.btn_video:
+                startActivity(new Intent(this, VideoInfoActivity.class));
             default:
                 break;
         }

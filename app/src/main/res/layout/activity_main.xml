@@ -51,5 +51,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="WIFI管理"/>
+        <Button
+            android:id="@+id/btn_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="视频播放"/>
     </LinearLayout>
 </ScrollView>
