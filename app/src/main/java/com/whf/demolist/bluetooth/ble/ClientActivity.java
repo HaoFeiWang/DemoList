@@ -62,8 +62,9 @@ public class ClientActivity extends AppCompatActivity {
     private static final UUID UUID_CHARACTERISTIC = UUID.fromString("00000010-0000-1000-8000-00805f9b34fb");
     private static final UUID UUID_DESCRIPTOR = UUID.fromString("00000100-0000-1000-8000-00805f9b34fb");
 
-    private Button btnScan;
-    private Button btnBroadcast;
+    private TextView btnScan;
+    private TextView btnBroadcast;
+    private TextView tvState;
     private RecyclerView lvBtInfo;
 
     private Map<String, BluetoothDevice> bluetoothMap;
@@ -88,6 +89,7 @@ public class ClientActivity extends AppCompatActivity {
     private void initView() {
         btnScan = findViewById(R.id.btn_scan);
         btnBroadcast = findViewById(R.id.btn_broadcast);
+        tvState = findViewById(R.id.tv_state);
         lvBtInfo = findViewById(R.id.lv_bluetooth_info);
 
         btnScan.setOnClickListener(new View.OnClickListener() {
@@ -183,10 +185,12 @@ public class ClientActivity extends AppCompatActivity {
         switch (state) {
             case BluetoothAdapter.STATE_ON:
                 Log.d(TAG, "bluetooth state changed to on!");
+                tvState.setText("蓝牙已开启");
                 bluetoothStateOn();
                 break;
             case BluetoothAdapter.STATE_OFF:
                 Log.d(TAG, "bluetooth state changed to off!");
+                tvState.setText("蓝牙已关闭");
                 break;
         }
     }
@@ -257,7 +261,8 @@ public class ClientActivity extends AppCompatActivity {
             bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
         }
         if (!bluetoothAdapter.isEnabled()) {
-            Log.d(TAG, "bluetooth not enable!");
+            Log.d(TAG, "bluetooth not eable!");
+            Toast.makeText(this,"准备开启蓝牙",Toast.LENGTH_SHORT).show();
             bluetoothAdapter.enable();
             state |= PENDING_BROADCAST;
             return;
@@ -267,12 +272,14 @@ public class ClientActivity extends AppCompatActivity {
             @Override
             public void onStartSuccess(AdvertiseSettings settingsInEffect) {
                 Log.d(TAG, "advertise success!");
+                tvState.setText("正在广播");
                 initBluetoothService();
             }
 
             @Override
             public void onStartFailure(int errorCode) {
                 Log.d(TAG, "advertise fail!");
+                tvState.setText("广播失败");
             }
         };
 
@@ -379,7 +386,7 @@ public class ClientActivity extends AppCompatActivity {
                 //设置是否可以连接，一般不可连接广播应用在iBeacon设备上
                 .setConnectable(true)
                 //设置广播的最长时间，最大时长为LIMITED_ADVERTISING_MAX_MILLIS(180秒)
-                .setTimeout(10 * 1000)
+                .setTimeout(180 * 1000)
                 //设置广播的信号强度 ADVERTISE_TX_POWER_ULTRA_LOW, ADVERTISE_TX_POWER_LOW,
                 //ADVERTISE_TX_POWER_MEDIUM, ADVERTISE_TX_POWER_HIGH 信号强度依次增强
                 .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH);
@@ -404,7 +411,6 @@ public class ClientActivity extends AppCompatActivity {
 
         return dataBuilder.build();
     }
-
 
     private boolean checkVariableNotNull() {
         if (bluetoothManager == null) {

@@ -3,28 +3,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:orientation="vertical"
+    android:padding="5dp"
     tools:context="com.whf.demolist.bluetooth.ble.ClientActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
-        <Button
+        <TextView
             android:id="@+id/btn_scan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="扫描设备" />
+            android:background="#fa8585"
+            android:textSize="17sp"
+            android:padding="5dp"
+            android:text="扫描" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_broadcast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/btn_scan"
+            android:textSize="17sp"
+            android:background="#fa8585"
+            android:padding="5dp"
+            android:layout_marginStart="5dp"
             android:text="广播" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_scan"
+            android:layout_marginTop="5dp" />
+
+    </RelativeLayout>
 
 
     <android.support.v7.widget.RecyclerView
