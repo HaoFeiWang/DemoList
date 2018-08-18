@@ -140,6 +140,7 @@ public class InfoActivity extends AppCompatActivity {
                     case BluetoothGatt.STATE_CONNECTED:
                         Log.d(TAG, "连接成功");
                         updateStateText("状态：已连接");
+                        executorReadRssiThread();
                         bluetoothGatt.discoverServices();
                         break;
                     case BluetoothGatt.STATE_DISCONNECTING:
@@ -303,7 +304,7 @@ public class InfoActivity extends AppCompatActivity {
             //断开连接后会获取rssi值会没有回调
             bluetoothGatt.readRemoteRssi();
             try {
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

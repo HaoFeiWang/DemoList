@@ -27,6 +27,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -62,10 +64,10 @@ public class ClientActivity extends AppCompatActivity {
 
     private Button btnScan;
     private Button btnBroadcast;
-    private ListView lvBtInfo;
+    private RecyclerView lvBtInfo;
 
     private Map<String, BluetoothDevice> bluetoothMap;
-    private ArrayAdapter<String> arrayAdapter;
+    private BluetoothListAdapter arrayAdapter;
 
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothLeScanner bluetoothLeScanner;
@@ -102,24 +104,24 @@ public class ClientActivity extends AppCompatActivity {
             }
         });
 
-        lvBtInfo.setOnItemClickListener((parent, view, position, id) -> {
+        arrayAdapter = new BluetoothListAdapter(this);
+        lvBtInfo.setAdapter(arrayAdapter);
+        lvBtInfo.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        arrayAdapter.setOnItemClickListener((address) -> {
             stopScan();
-            skipToInfo((TextView) view);
+            skipToInfo(address);
         });
     }
 
-    private void skipToInfo(TextView view) {
-        String info = (String) view.getText();
+    private void skipToInfo(String address) {
         Intent intent = new Intent(ClientActivity.this, InfoActivity.class);
-        BluetoothDevice bluetoothDevice = bluetoothMap.get(info);
+        BluetoothDevice bluetoothDevice = bluetoothMap.get(address);
         intent.putExtra(Constants.REMOTE_BLUETOOTH, bluetoothDevice);
         startActivity(intent);
     }
 
     private void initData() {
         bluetoothMap = new HashMap<>();
-        arrayAdapter = new ArrayAdapter<>(this, R.layout.item_bluetooth, new ArrayList<>());
-        lvBtInfo.setAdapter(arrayAdapter);
 
         bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         if (bluetoothManager != null) {
@@ -130,16 +132,20 @@ public class ClientActivity extends AppCompatActivity {
             @Override
             public void onScanResult(int callbackType, ScanResult result) {
                 BluetoothDevice device = result.getDevice();
-                String info = device.getAddress() + "  |  " + device.getName();
-
-                //获取信号强度
-                int rssi = result.getRssi();
+                String info = device.getAddress();
 
                 if (bluetoothMap.get(info) == null) {
-                    Log.d(TAG, "Scan Result = " + info);
                     bluetoothMap.put(info, device);
-                    arrayAdapter.add(info);
                 }
+
+                BluetoothInfo bluetoothInfo = new BluetoothInfo();
+                bluetoothInfo.setName(device.getName());
+                bluetoothInfo.setAddress(device.getAddress());
+                bluetoothInfo.setRssi(String.valueOf(result.getRssi()));
+                Log.d(TAG, "scan result = " + bluetoothInfo + " Thread = " + Thread.currentThread().getName());
+
+
+                arrayAdapter.addBluetoothData(bluetoothInfo);
             }
 
             @Override
@@ -373,7 +379,7 @@ public class ClientActivity extends AppCompatActivity {
                 //设置是否可以连接，一般不可连接广播应用在iBeacon设备上
                 .setConnectable(true)
                 //设置广播的最长时间，最大时长为LIMITED_ADVERTISING_MAX_MILLIS(180秒)
-                .setTimeout(10*1000)
+                .setTimeout(10 * 1000)
                 //设置广播的信号强度 ADVERTISE_TX_POWER_ULTRA_LOW, ADVERTISE_TX_POWER_LOW,
                 //ADVERTISE_TX_POWER_MEDIUM, ADVERTISE_TX_POWER_HIGH 信号强度依次增强
                 .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH);
