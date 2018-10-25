@@ -40,20 +40,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Binder"/>
+
         <Button
             android:id="@+id/btn_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="通知栏"/>
+
         <Button
             android:id="@+id/btn_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="视频播放"/>
+
         <Button
             android:id="@+id/btn_wifi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="WIFI管理"/>
+
+        <Button
+            android:id="@+id/btn_shake"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="摇一摇"/>
+
     </LinearLayout>
 </ScrollView>
