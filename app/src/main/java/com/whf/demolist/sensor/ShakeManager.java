@@ -14,7 +14,7 @@ import android.util.Log;
 @SuppressWarnings("WeakerAccess")
 public class ShakeManager {
 
-    private static final String TAG = "SENSOR_TAG_" + ShakeManager.class.getSimpleName();
+    private static final String TAG = "BLE_TEST_" + ShakeManager.class.getSimpleName();
 
     private static ShakeManager shakeManager;
 
@@ -55,7 +55,7 @@ public class ShakeManager {
         }
     }
 
-    public synchronized void release() {
+    public void release() {
         if (sensorManager != null) {
             sensorManager.unregisterListener(sensorEventListener);
         }

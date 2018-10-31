@@ -8,11 +8,20 @@
     tools:context="com.whf.demolist.sensor.SensorActivity">
 
     <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:layout_margin="1dp"
+        android:background="#f1a9a9"
+        android:gravity="center" />
+
+    <TextView
         android:id="@+id/btn_start_shake"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_margin="3dp"
+        android:padding="3dp"
+        android:layout_margin="1dp"
         android:background="#f1a9a9"
         android:gravity="center"
         android:text="开始摇动" />
@@ -21,8 +30,8 @@
         android:id="@+id/btn_stop_shake"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_margin="3dp"
+        android:padding="3dp"
+        android:layout_margin="1dp"
         android:background="#f1a9a9"
         android:gravity="center"
         android:text="结束摇动" />
@@ -31,8 +40,8 @@
         android:id="@+id/btn_response"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_margin="3dp"
+        android:padding="3dp"
+        android:layout_margin="1dp"
         android:background="#f1a9a9"
         android:gravity="center"
         android:text="回馈结果" />
@@ -41,8 +50,8 @@
         android:id="@+id/btn_secondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_margin="3dp"
+        android:padding="3dp"
+        android:layout_margin="1dp"
         android:background="#f1a9a9"
         android:gravity="center"
         android:text="扫描" />
