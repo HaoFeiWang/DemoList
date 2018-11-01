@@ -1,12 +1,17 @@
-package com.whf.demolist.bluetooth.ad;
+package com.whf.demolist.bluetooth.connect;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseData;
+import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.BroadcastReceiver;
@@ -15,94 +20,147 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.ParcelUuid;
 import android.support.v4.util.ArraySet;
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
+import com.whf.demolist.bluetooth.ad.BleManager;
+
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
 
 /**
- * 蓝牙管理
- * Created by @author WangHaoFei on 2018/10/25.
+ * Ble一对多连接管理
+ * Created by @author WangHaoFei on 2018/11/1.
  */
 
 @SuppressWarnings("WeakerAccess")
-public class BleManager {
-
+public class BleConnectManager {
     private static final String TAG = "BLE_TEST_" + BleManager.class.getSimpleName();
 
-    private static final int MANUFACTURE_ID = 28;
-    private static final byte[] MANUFACTURE_DATA = new byte[]{35};
+    private static final int ADVERTISING_TIME = 120 * 1000;
+    private static final int MANUFACTURE_ID = 26;
+    private static final byte[] MANUFACTURE_DATA = new byte[]{31};
+
+    private static final ParcelUuid UUID = ParcelUuid.fromString("00001373-0000-1000-8000-00805F9B34FB");
 
     private static final int IDLE = 0x0000;
     private static final int PENDING_SCAN = 0x0001;
     private static final int SCANNING = 0x0002;
     private static final int PENDING_ADVERTISE = 0x0010;
     private static final int ADVERTISING = 0x0020;
+    private static final int PENDING_CONNECT = 0x0100;
 
-    private static BleManager instance;
+    private static BleConnectManager instance;
 
     private int state = IDLE;
-    private StrategyAd strategy;
 
     private BluetoothManager bluetoothManager;
     private BluetoothAdapter bluetoothAdapter;
+
     private BluetoothLeScanner scanner;
-
+    private ScanSettings scanSetting;
     private ScanCallback scanCallback;
+    private ArrayList<ScanFilter> scanFilter;
+
+    private AdvertiseData adData;
+    private AdvertiseSettings adSetting;
+    private AdvertiseCallback adCallback;
     private BluetoothLeAdvertiser advertiser;
-    private BleBroadCastReceiver bleBroadCastReceiver;
 
-    private ArraySet<StrategyAd> strategySet;
+    private ArrayMap<String, BluetoothDevice> pendingConnectDevice;
+    private ArrayMap<String, BluetoothGatt> connectedDevice;
 
-    public static synchronized BleManager getInstance(Context context) {
+    private BleConnectManager.BleBroadCastReceiver bleBroadCastReceiver;
+
+    public static synchronized BleConnectManager getInstance(Context context) {
         if (instance == null) {
-            instance = new BleManager(context);
+            instance = new BleConnectManager(context);
         }
         instance.registerBroadCast(context);
         return instance;
     }
 
-    private BleManager(Context context) {
-        this.strategySet = new ArraySet<>();
+    private BleConnectManager(Context context) {
         this.bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+        this.pendingConnectDevice = new ArrayMap<>();
+        this.connectedDevice = new ArrayMap<>();
     }
 
-    public void startAdvertise(StrategyAd strategyAd) {
-        if (strategyAd == null) {
+    public void startAdvertise() {
+        if ((state | ADVERTISING) == ADVERTISING) {
             return;
         }
 
-        if ((state & ADVERTISING) == ADVERTISING) {
-            if (!strategyAd.equals(strategy)) {
-                state &= ~ADVERTISING;
-                stopAdvertise(strategy);
-            } else {
-                return;
-            }
-        }
-
-        strategy = strategyAd;
-        strategySet.add(strategy);
         state |= PENDING_ADVERTISE;
         if (checkBluetoothDisable(true)) {
             return;
         }
 
         initAdvertiser();
+        initAdSetting();
+        initAdData();
+        initAdCallback();
         state |= ADVERTISING;
-        strategyAd.startAdvertise(advertiser);
+        Log.d(TAG, "start advertise!");
+        advertiser.startAdvertising(adSetting, adData, adCallback);
     }
 
-    public void stopAdvertise(StrategyAd strategy) {
+    private void initAdvertiser() {
+        if (advertiser == null) {
+            advertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
+        }
+    }
+
+    private void initAdSetting() {
+        if (adSetting != null) {
+            return;
+        }
+
+        adSetting = new AdvertiseSettings.Builder()
+                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
+                .setConnectable(true)
+                .setTimeout(ADVERTISING_TIME)
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
+                .build();
+    }
+
+    private void initAdData() {
+        if (adData != null) {
+            return;
+        }
+
+        adData = new AdvertiseData.Builder()
+                .addManufacturerData(MANUFACTURE_ID, MANUFACTURE_DATA)
+                .setIncludeTxPowerLevel(true)
+                .setIncludeDeviceName(true)
+                .build();
+    }
+
+    private void initAdCallback() {
+        if (adCallback != null) {
+            return;
+        }
+
+        adCallback = new AdvertiseCallback() {
+            @Override
+            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+                super.onStartSuccess(settingsInEffect);
+            }
+
+            @Override
+            public void onStartFailure(int errorCode) {
+                super.onStartFailure(errorCode);
+            }
+        };
+    }
+
+    public void stopAdvertise() {
         if (checkBluetoothDisable(false)) {
             return;
         }
 
-        Log.d(TAG, "advertiser = " + advertiser + " strategy = " + strategy);
-        if (advertiser != null && strategy != null) {
+        if (advertiser != null && adCallback != null) {
             state |= ~(PENDING_ADVERTISE | ADVERTISING);
-            strategy.stopAdvertise(advertiser);
+            advertiser.stopAdvertising(adCallback);
         }
     }
 
@@ -116,32 +174,13 @@ public class BleManager {
             return;
         }
 
-        initScanCallback();
         initScanner();
+        iniScanFilter();
+        initScanCallback();
+        initScanSetting();
         state |= SCANNING;
-        Log.d(TAG, "start scanning!");
-        scanner.startScan(createScanFilterList(), createScanSetting(), scanCallback);
-    }
-
-    public void stopScan() {
-        if (checkBluetoothDisable(false)) {
-            return;
-        }
-
-        if (scanner != null && scanCallback != null) {
-            state |= ~(PENDING_SCAN | SCANNING);
-            scanner.stopScan(scanCallback);
-        }
-    }
-
-    private boolean checkBluetoothDisable(boolean autoOpen) {
-        return !checkBluetoothDeviceEnable() || !checkBluetoothOpen(autoOpen);
-    }
-
-    private void initAdvertiser() {
-        if (advertiser == null) {
-            advertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
-        }
+        Log.d(TAG, "start scan!");
+        scanner.startScan(scanFilter, scanSetting, scanCallback);
     }
 
     private void initScanner() {
@@ -150,19 +189,25 @@ public class BleManager {
         }
     }
 
-    private ScanSettings createScanSetting() {
-        return new ScanSettings.Builder()
-                //balance：500ms   lowLatency：尽可能快
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                .build();
-    }
+    private void iniScanFilter() {
+        if (scanFilter != null) {
+            return;
+        }
 
-    private ArrayList<ScanFilter> createScanFilterList() {
         ArrayList<ScanFilter> scanFilterList = new ArrayList<>();
         ScanFilter.Builder filterBuild = new ScanFilter.Builder()
                 .setManufacturerData(MANUFACTURE_ID, MANUFACTURE_DATA);
         scanFilterList.add(filterBuild.build());
-        return scanFilterList;
+        scanFilter = scanFilterList;
+    }
+
+    private void initScanSetting() {
+        if (scanSetting != null) {
+            return;
+        }
+        scanSetting = new ScanSettings.Builder()
+                .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
+                .build();
     }
 
     private void initScanCallback() {
@@ -185,21 +230,26 @@ public class BleManager {
         };
     }
 
-    private void scanResult(ScanResult result) {
-        ScanRecord scanRecord = result.getScanRecord();
-        if (scanRecord == null) {
+    public void stopScan() {
+        if (checkBluetoothDisable(false)) {
             return;
         }
 
-        String address = result.getDevice().getAddress();
-        Map<ParcelUuid, byte[]> serviceData = scanRecord.getServiceData();
-        Set<ParcelUuid> parcelUuidSet = serviceData.keySet();
-        for (ParcelUuid uuid : parcelUuidSet) {
-            StrategyAd strategyAd = AdStrategyClassify.strategyClassify(uuid);
-            if (strategyAd != null) {
-                strategySet.add(strategyAd);
-                strategyAd.parseAdvertise(address, serviceData.get(uuid));
-            }
+        if (scanner != null && scanCallback != null) {
+            state |= ~(PENDING_SCAN | SCANNING);
+            scanner.stopScan(scanCallback);
+        }
+    }
+
+    private boolean checkBluetoothDisable(boolean autoOpen) {
+        return !checkBluetoothDeviceEnable() || !checkBluetoothOpen(autoOpen);
+    }
+
+    private void scanResult(ScanResult result) {
+        BluetoothDevice device = result.getDevice();
+        String address = device.getAddress();
+        if (!connectedDevice.containsKey(address)) {
+            pendingConnectDevice.put(address, device);
         }
     }
 
@@ -227,7 +277,7 @@ public class BleManager {
 
     private void registerBroadCast(Context context) {
         if (bleBroadCastReceiver == null) {
-            bleBroadCastReceiver = new BleBroadCastReceiver();
+            bleBroadCastReceiver = new BleConnectManager.BleBroadCastReceiver();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
             context.getApplicationContext().registerReceiver(bleBroadCastReceiver, intentFilter);
@@ -262,7 +312,7 @@ public class BleManager {
             startScan();
         }
         if (state == PENDING_ADVERTISE) {
-            startAdvertise(strategy);
+            startAdvertise();
         }
     }
 
@@ -273,11 +323,7 @@ public class BleManager {
 
     public void release(Context context) {
         stopScan();
-        stopAdvertise(strategy);
-        for (StrategyAd strategyAd : strategySet) {
-            strategyAd.release();
-        }
-        strategySet.clear();
+        stopAdvertise();
         unregisterBroadCast(context);
         state = IDLE;
     }

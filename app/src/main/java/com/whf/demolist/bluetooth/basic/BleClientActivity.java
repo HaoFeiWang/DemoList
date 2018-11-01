@@ -54,6 +54,8 @@ public class BleClientActivity extends AppCompatActivity {
     private static final int PENDING_SCAN = 0x00000001;
     private static final int PENDING_BROADCAST = 0x00000010;
 
+    //默认UUID占用128位（16个字节）
+    //但是在Ble中，如果按照规范0000xxxx-0000-1000-8000-00805f9b34fb则只占用16位（2个字节）
     private static final UUID UUID_SERVICE = UUID.fromString("00000001-0000-1000-8000-00805f9b34fb");
     private static final UUID UUID_CHARACTERISTIC = UUID.fromString("00000010-0000-1000-8000-00805f9b34fb");
     private static final UUID UUID_DESCRIPTOR = UUID.fromString("00000100-0000-1000-8000-00805f9b34fb");
@@ -379,7 +381,7 @@ public class BleClientActivity extends AppCompatActivity {
         AdvertiseSettings.Builder builder = new AdvertiseSettings.Builder()
                 //设置广播模式：低功耗、平衡、低延时，广播间隔时间依次越来越短
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
-                //设置是否可以连接，一般不可连接广播应用在iBeacon设备上
+                //设置是否可以连接，一般不可连接广播应用在iBeacon设备上，占用广播的三个字节
                 .setConnectable(true)
                 //设置广播的最长时间，最大时长为LIMITED_ADVERTISING_MAX_MILLIS(180秒)
                 .setTimeout(180 * 1000)
@@ -394,15 +396,18 @@ public class BleClientActivity extends AppCompatActivity {
      * 创建广播数据，根据需求自行定制否则采用默认的
      */
     private AdvertiseData buildAdvertiseData() {
+        //每增加一项设置需要两个字节，分别用来标识该设置的类型和字符长度
         AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder()
                 //添加厂家信息，第一个参数为厂家ID(不足两个字节会自动补0，例如这里为0x34，实际数据则为34,00)
-                //一般情况下无需设置，否则会出现无法被其他设备扫描到的情况
+                //一般情况下无需设置，否则会出现无法被其他设备扫描到的情况，占用广播的2+2+byte数组长度个字节
                 .addManufacturerData(0x34, new byte[]{0x56})
-                //添加服务进行广播，即对外广播本设备拥有的服务
-//                .addServiceData();
-                //是否广播信号强度
+                //添加服务的uuid，如果增加则占用广播长度的 2+2 个字节
+                //.addServiceUuid()
+                //添加服务进行广播，即对外广播本设备拥有的服务，如果增加则占用广播长度的 2+2+数据长度 个字节
+                //.addServiceData();
+                //是否广播信号强度，如果为true则占用广播的 2+1 个字节
                 .setIncludeTxPowerLevel(true)
-                //是否广播设备名称
+                //是否广播设备名称，如果为true，则占用广播的2个字节 + 设备名称长度的字节
                 .setIncludeDeviceName(true);
 
         return dataBuilder.build();

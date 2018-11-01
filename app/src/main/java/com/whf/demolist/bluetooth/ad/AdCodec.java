@@ -30,9 +30,11 @@ public class AdCodec {
 
     public static AdvertiseData createAdData(ParcelUuid uuid, byte[] segment) {
         AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder()
+                //类型和长度占用2个字节，id占用2个字节，data占用1个字节
                 .addManufacturerData(MANUFACTURE_ID, MANUFACTURE_DATA)
                 .setIncludeTxPowerLevel(false)
                 .setIncludeDeviceName(false)
+                //类型和长度占用2个字节，uuid占用2
                 .addServiceData(uuid, segment);
         return dataBuilder.build();
     }
