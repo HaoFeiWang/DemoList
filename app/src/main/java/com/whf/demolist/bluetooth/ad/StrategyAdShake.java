@@ -1,4 +1,4 @@
-package com.whf.demolist.sensor.ad;
+package com.whf.demolist.bluetooth.ad;
 
 
 import android.bluetooth.le.AdvertiseCallback;
@@ -9,65 +9,74 @@ import android.os.ParcelUuid;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
+
 import java.util.List;
 
 /**
- * 静止状态广播策略
+ * 摇动状态广播策略
  * Created by @author WangHaoFei on 2018/10/31.
  */
 
-public class StrategyAdStatic implements StrategyAd {
+public class StrategyAdShake implements StrategyAd {
 
-    private static final String TAG = "BLE_TEST_" + StrategyAdStatic.class.getSimpleName();
-    private static final int ADVERTISING_TIME = 180 * 1000;
+    private static final String TAG = "BLE_TEST_" + StrategyAdShake.class.getSimpleName();
+    private static final int ADVERTISING_TIME = 120 * 1000;
 
-    private static StrategyAdStatic instance;
+    private static StrategyAdShake instance;
 
     private AdvertiseSettings adSetting;
     private ArrayMap<String, ParseAdData> achieveAdData;
-    private ArrayMap<AdvertiseData, AdvertiseCallback> adDataMap;
+    private ArrayMap<AdvertiseData, AdvertiseCallback> sourceAdData;
 
-    private StrategyAdStatic() {
-        adDataMap = new ArrayMap<>();
+    private StrategyAdShake() {
+        sourceAdData = new ArrayMap<>();
         achieveAdData = new ArrayMap<>();
     }
 
-    public synchronized static StrategyAdStatic getInstance() {
+    public synchronized static StrategyAdShake getInstance() {
         if (instance == null) {
-            instance = new StrategyAdStatic();
+            instance = new StrategyAdShake();
         }
         return instance;
     }
 
     @Override
     public ParcelUuid getParcelUuid() {
-        return AdStrategyClassify.UUID_STOP;
+        return AdStrategyClassify.UUID_START;
     }
 
     @Override
     public void startAdvertise(BluetoothLeAdvertiser advertiser) {
         initAdSetting();
         initAdData();
-        Log.d(TAG, "static strategy start advertise!");
+        Log.d(TAG, "shake strategy start advertise!");
         emitAdvertise(advertiser);
     }
 
     @Override
     public void stopAdvertise(BluetoothLeAdvertiser advertiser) {
-        for (int i = 0; i < adDataMap.size(); i++) {
-            AdvertiseData adData = adDataMap.keyAt(i);
-            advertiser.stopAdvertising(adDataMap.get(adData));
+        Log.d(TAG,"stop advertise!");
+        for (int i = 0; i < sourceAdData.size(); i++) {
+            AdvertiseData adData = sourceAdData.keyAt(i);
+            Log.d(TAG, "stop ad = " + i);
+            advertiser.stopAdvertising(sourceAdData.get(adData));
         }
     }
 
     @Override
     public void parseAdvertise(String address, byte[] content) {
+        DeviceManager.getInstance().listenerShaking(address);
         AdCodec.decode(address, content, achieveAdData);
         ParseAdData parseAdData = achieveAdData.get(address);
         if (parseAdData != null) {
-            DeviceManager.getInstance().stopShakingDevice(address);
-            DeviceManager.getInstance().addStaticDevice(address, parseAdData.getContent());
+            DeviceManager.getInstance().addShakingDevice(address, parseAdData.getContent());
         }
+    }
+
+    @Override
+    public void release() {
+        sourceAdData.clear();
+        achieveAdData.clear();
     }
 
     private void initAdSetting() {
@@ -84,7 +93,7 @@ public class StrategyAdStatic implements StrategyAd {
     }
 
     private void initAdData() {
-        if (adDataMap.size() != 0) {
+        if (sourceAdData.size() != 0) {
             return;
         }
 
@@ -93,33 +102,33 @@ public class StrategyAdStatic implements StrategyAd {
         if (contentByte != null) {
             for (int i = 0; i < contentByte.size(); i++) {
                 AdvertiseData adData = AdCodec.createAdData(getParcelUuid(), contentByte.get(i));
-                adDataMap.put(adData, new StaticAdvertiseCallback(i));
+                sourceAdData.put(adData, new ShakeAdvertiseCallback(i));
             }
         }
     }
 
     private void emitAdvertise(BluetoothLeAdvertiser advertiser) {
-        for (int i = 0; i < adDataMap.size(); i++) {
-            AdvertiseData adData = adDataMap.keyAt(i);
-            advertiser.startAdvertising(adSetting, adData, adDataMap.get(adData));
+        for (int i = 0; i < sourceAdData.size(); i++) {
+            AdvertiseData adData = sourceAdData.keyAt(i);
+            advertiser.startAdvertising(adSetting, adData, sourceAdData.get(adData));
         }
     }
 
-    static class StaticAdvertiseCallback extends AdvertiseCallback {
+    static class ShakeAdvertiseCallback extends AdvertiseCallback {
         private int segment;
 
-        StaticAdvertiseCallback(int segment) {
+        ShakeAdvertiseCallback(int segment) {
             this.segment = segment;
         }
 
         @Override
         public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-            Log.d(TAG, "static strategy advertise " + segment + " success!");
+            Log.d(TAG, "shake strategy advertise " + segment + " success!");
         }
 
         @Override
         public void onStartFailure(int errorCode) {
-            Log.d(TAG, "static strategy advertise " + segment + " fail = " + errorCode);
+            Log.d(TAG, "shake strategy advertise " + segment + " fail = " + errorCode);
         }
     }
 }

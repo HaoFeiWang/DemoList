@@ -1,4 +1,4 @@
-package com.whf.demolist.sensor.ad;
+package com.whf.demolist.bluetooth.ad;
 
 
 import android.support.v4.util.ArrayMap;
@@ -95,13 +95,15 @@ public class DeviceManager {
     }
 
     public void release() {
-        staticDeviceMap.clear();
-        shakingDeviceMap.clear();
         for (String address : shakingListenerMap.keySet()) {
             ShakingListener shakingListener = shakingListenerMap.get(address);
             shakingListener.release();
             shakingListener.interrupt();
         }
+
+        staticDeviceMap.clear();
+        shakingDeviceMap.clear();
+        shakingListenerMap.clear();
     }
 
     public static class ShakingListener extends Thread {
@@ -121,15 +123,15 @@ public class DeviceManager {
         }
 
         private synchronized void timer() {
-            try {
-                TimeUnit.SECONDS.sleep(5);
-                if (!shakingStopped) {
-                    DeviceManager.getInstance().shakingDeviceStopped(address);
-                }
-                wait();
-            } catch (InterruptedException e) {
-                if (!released) {
-                    timer();
+            while (!released) {
+                try {
+                    TimeUnit.SECONDS.sleep(5);
+                    if (!shakingStopped) {
+                        DeviceManager.getInstance().shakingDeviceStopped(address);
+                    }
+                    wait();
+                } catch (InterruptedException e) {
+                    //no-op
                 }
             }
         }

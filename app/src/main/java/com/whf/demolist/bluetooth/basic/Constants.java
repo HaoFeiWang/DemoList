@@ -1,4 +1,4 @@
-package com.whf.demolist.bluetooth.ble;
+package com.whf.demolist.bluetooth.basic;
 
 import java.util.UUID;
 

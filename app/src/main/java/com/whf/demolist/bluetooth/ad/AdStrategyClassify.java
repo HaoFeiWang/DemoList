@@ -1,4 +1,4 @@
-package com.whf.demolist.sensor.ad;
+package com.whf.demolist.bluetooth.ad;
 
 import android.os.ParcelUuid;
 
@@ -13,13 +13,13 @@ public class AdStrategyClassify {
     public static final ParcelUuid UUID_STOP = ParcelUuid.fromString("00002364-0000-1000-8000-00805F9B34FB");
     public static final ParcelUuid UUID_RESPONSE = ParcelUuid.fromString("00002365-0000-1000-8000-00805F9B34FB");
 
-    public static StrategyAd checkStrategy(ParcelUuid uuid) {
+    public static StrategyAd strategyClassify(ParcelUuid uuid) {
         if (UUID_START.equals(uuid)) {
             return StrategyAdShake.getInstance();
         } else if (UUID_STOP.equals(uuid)) {
             return StrategyAdStatic.getInstance();
         } else if (UUID_RESPONSE.equals(uuid)) {
-
+            return StrategyAdResponse.getInstance();
         }
         return null;
     }

@@ -1,4 +1,4 @@
-package com.whf.demolist.sensor.ad;
+package com.whf.demolist.bluetooth.ad;
 
 
 import android.support.v4.util.ArraySet;

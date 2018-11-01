@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="com.whf.demolist.sensor.SensorActivity">
+    tools:context="com.whf.demolist.bluetooth.ad.control.SensorActivity">
 
     <TextView
         android:id="@+id/tv_content"

@@ -1,4 +1,4 @@
-package com.whf.demolist.sensor.ad;
+package com.whf.demolist.bluetooth.ad;
 
 /**
  * 摇动设备

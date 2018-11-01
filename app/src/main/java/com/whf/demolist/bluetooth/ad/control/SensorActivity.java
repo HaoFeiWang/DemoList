@@ -1,4 +1,4 @@
-package com.whf.demolist.sensor;
+package com.whf.demolist.bluetooth.ad.control;
 
 
 import android.Manifest;
@@ -14,18 +14,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.whf.demolist.R;
-import com.whf.demolist.sensor.ad.BleManager;
-import com.whf.demolist.sensor.ad.DeviceManager;
-import com.whf.demolist.sensor.ad.StrategyAdShake;
-import com.whf.demolist.sensor.ad.StrategyAdStatic;
+import com.whf.demolist.bluetooth.ad.BleManager;
+import com.whf.demolist.bluetooth.ad.DeviceManager;
+import com.whf.demolist.bluetooth.ad.StrategyAdShake;
+import com.whf.demolist.bluetooth.ad.StrategyAdStatic;
 
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 public class SensorActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -37,6 +35,7 @@ public class SensorActivity extends AppCompatActivity implements View.OnClickLis
     private ShakeManager shakeManager;
     private BleManager bleManager;
     private Disposable disposable;
+    private DeviceManager deviceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +51,6 @@ public class SensorActivity extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.btn_secondary).setOnClickListener(this);
 
         shakeManager = ShakeManager.getInstance(this);
-        shakeManager.register();
         shakeManager.setShakeListener(new ShakeManager.ShakeListener() {
             @Override
             public void onStart() {
@@ -66,6 +64,7 @@ public class SensorActivity extends AppCompatActivity implements View.OnClickLis
         });
 
         bleManager = BleManager.getInstance(this);
+        deviceManager = DeviceManager.getInstance();
     }
 
     @Override
@@ -76,6 +75,9 @@ public class SensorActivity extends AppCompatActivity implements View.OnClickLis
         }
         if (bleManager != null) {
             bleManager.release(this);
+        }
+        if (deviceManager != null) {
+            deviceManager.release();
         }
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
@@ -137,7 +139,7 @@ public class SensorActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private String getText() {
-        int count = DeviceManager.getInstance().getShakingDeviceCount();
+        int count = deviceManager.getShakingDeviceCount();
         Log.d(TAG, "shaking device count = " + count);
         return "设备数：" + count;
     }

@@ -1,14 +1,12 @@
-package com.whf.demolist.bluetooth.ble;
+package com.whf.demolist.bluetooth.basic;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -26,11 +24,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
-public class InfoActivity extends AppCompatActivity {
+public class BleInfoActivity extends AppCompatActivity {
 
-    private static final String TAG = Constants.TAG + InfoActivity.class;
+    private static final String TAG = Constants.TAG + BleInfoActivity.class;
 
     private TextView tvState;
     private TextView tvName;
@@ -183,7 +180,7 @@ public class InfoActivity extends AppCompatActivity {
                         UUID bluetoothGattServiceUuid = bluetoothGattService.getUuid();
                         Log.d(TAG, "bluetoothGattService uuid = " + bluetoothGattService.getUuid());
                         if (Constants.UUID_SERVICE.equals(bluetoothGattServiceUuid)) {
-                            InfoActivity.this.bluetoothGattService = bluetoothGattService;
+                            BleInfoActivity.this.bluetoothGattService = bluetoothGattService;
                         }
 
                         //获取该服务中的所有特征
@@ -192,7 +189,7 @@ public class InfoActivity extends AppCompatActivity {
                             UUID bluetoothGattCharacteristicUuid = bluetoothGattCharacteristic.getUuid();
                             Log.d(TAG, "bluetoothGattCharacteristic uuid = " + bluetoothGattCharacteristicUuid);
                             if (Constants.UUID_CHARACTERISTIC.equals(bluetoothGattCharacteristicUuid)) {
-                                InfoActivity.this.bluetoothGattCharacteristic = bluetoothGattCharacteristic;
+                                BleInfoActivity.this.bluetoothGattCharacteristic = bluetoothGattCharacteristic;
                             }
 
                             //获取该特征中的所有描述
@@ -201,7 +198,7 @@ public class InfoActivity extends AppCompatActivity {
                                 UUID bluetoothGattDescriptorUuid = bluetoothGattDescriptor.getUuid();
                                 Log.d(TAG, "bluetoothGattDescriptor uuid = " + bluetoothGattDescriptorUuid);
                                 if (Constants.UUID_DESCRIPTOR.equals(bluetoothGattDescriptorUuid)) {
-                                    InfoActivity.this.bluetoothGattDescriptor = bluetoothGattDescriptor;
+                                    BleInfoActivity.this.bluetoothGattDescriptor = bluetoothGattDescriptor;
                                 }
                             }
                         }

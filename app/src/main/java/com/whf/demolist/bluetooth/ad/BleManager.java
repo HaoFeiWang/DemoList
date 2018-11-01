@@ -1,4 +1,4 @@
-package com.whf.demolist.sensor.ad;
+package com.whf.demolist.bluetooth.ad;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.ParcelUuid;
+import android.support.v4.util.ArraySet;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -51,17 +52,20 @@ public class BleManager {
     private BluetoothLeAdvertiser advertiser;
     private BleBroadCastReceiver bleBroadCastReceiver;
 
+    private ArraySet<StrategyAd> strategySet;
+
     @SuppressWarnings("WeakerAccess")
     public static synchronized BleManager getInstance(Context context) {
         if (instance == null) {
             instance = new BleManager(context);
         }
+        instance.registerBroadCast(context);
         return instance;
     }
 
     private BleManager(Context context) {
+        this.strategySet = new ArraySet<>();
         this.bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
-        registerBroadCast(context);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -70,7 +74,6 @@ public class BleManager {
             return;
         }
 
-        Log.d(TAG, "state = " + state + " pending strategy = " + strategyAd + " current strategy = " + strategy);
         if ((state & ADVERTISING) == ADVERTISING) {
             if (!strategyAd.equals(strategy)) {
                 state &= ~ADVERTISING;
@@ -81,6 +84,7 @@ public class BleManager {
         }
 
         strategy = strategyAd;
+        strategySet.add(strategy);
         state |= PENDING_ADVERTISE;
         if (checkBluetoothDisable(true)) {
             return;
@@ -191,8 +195,9 @@ public class BleManager {
         Map<ParcelUuid, byte[]> serviceData = scanRecord.getServiceData();
         Set<ParcelUuid> parcelUuidSet = serviceData.keySet();
         for (ParcelUuid uuid : parcelUuidSet) {
-            StrategyAd strategyAd = AdStrategyClassify.checkStrategy(uuid);
+            StrategyAd strategyAd = AdStrategyClassify.strategyClassify(uuid);
             if (strategyAd != null) {
+                strategySet.add(strategyAd);
                 strategyAd.parseAdvertise(address, serviceData.get(uuid));
             }
         }
@@ -255,7 +260,8 @@ public class BleManager {
         Log.d(TAG, "bluetooth state on!");
         if (state == PENDING_SCAN) {
             startScan();
-        } else if (state == PENDING_ADVERTISE) {
+        }
+        if (state == PENDING_ADVERTISE) {
             startAdvertise(strategy);
         }
     }
@@ -268,6 +274,10 @@ public class BleManager {
     public void release(Context context) {
         stopScan();
         stopAdvertise(strategy);
+        for (StrategyAd strategyAd : strategySet) {
+            strategyAd.release();
+        }
+        strategySet.clear();
         unregisterBroadCast(context);
         state = IDLE;
     }

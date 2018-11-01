@@ -4,47 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="5dp"
-    tools:context="com.whf.demolist.bluetooth.ble.ClientActivity">
+    tools:context="com.whf.demolist.bluetooth.BluetoothActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/btn_scan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#fa8585"
-            android:textSize="17sp"
-            android:padding="5dp"
-            android:text="扫描" />
-
-        <TextView
-            android:id="@+id/btn_broadcast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/btn_scan"
-            android:textSize="17sp"
-            android:background="#fa8585"
-            android:padding="5dp"
-            android:layout_marginStart="5dp"
-            android:text="广播" />
-
-        <TextView
-            android:id="@+id/tv_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/btn_scan"
-            android:layout_marginTop="5dp" />
-
-    </RelativeLayout>
-
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/lv_bluetooth_info"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btn_basic"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" />
+        android:text="基础"/>
+    <Button
+        android:id="@+id/btn_ad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="面向广播"/>
+    <Button
+        android:id="@+id/btn_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="面向连接"/>
 
 </LinearLayout>

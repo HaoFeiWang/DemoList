@@ -1,4 +1,4 @@
-package com.whf.demolist.bluetooth.ble;
+package com.whf.demolist.bluetooth.basic;
 
 /**
  * Created by @author WangHaoFei on 2018/8/18.

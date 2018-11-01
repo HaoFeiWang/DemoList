@@ -1,4 +1,4 @@
-package com.whf.demolist.sensor;
+package com.whf.demolist.bluetooth.ad.control;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -34,6 +34,8 @@ public class ShakeManager {
         if (shakeManager == null) {
             shakeManager = new ShakeManager(context);
         }
+
+        shakeManager.register();
         return shakeManager;
     }
 
@@ -49,8 +51,8 @@ public class ShakeManager {
         this.shakeListener = shakeListener;
     }
 
-    public void register() {
-        if (sensorManager != null && sensor != null) {
+    private void register() {
+        if (sensorManager != null && sensor != null && sensorEventListener != null) {
             sensorManager.registerListener(sensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }

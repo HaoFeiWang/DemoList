@@ -1,9 +1,8 @@
-package com.whf.demolist.bluetooth.ble;
+package com.whf.demolist.bluetooth.basic;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
@@ -31,9 +30,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,9 +45,9 @@ import java.util.UUID;
 /**
  * 低功耗Ble蓝牙
  */
-public class ClientActivity extends AppCompatActivity {
+public class BleClientActivity extends AppCompatActivity {
 
-    private static final String TAG = Constants.TAG + ClientActivity.class;
+    private static final String TAG = Constants.TAG + BleClientActivity.class;
 
     private int state;
     private static final int IDLE = 0x00000000;
@@ -79,7 +75,7 @@ public class ClientActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bluetooth);
+        setContentView(R.layout.activity_ble_client);
 
         initView();
         initData();
@@ -116,7 +112,7 @@ public class ClientActivity extends AppCompatActivity {
     }
 
     private void skipToInfo(String address) {
-        Intent intent = new Intent(ClientActivity.this, InfoActivity.class);
+        Intent intent = new Intent(BleClientActivity.this, BleInfoActivity.class);
         BluetoothDevice bluetoothDevice = bluetoothMap.get(address);
         intent.putExtra(Constants.REMOTE_BLUETOOTH, bluetoothDevice);
         startActivity(intent);

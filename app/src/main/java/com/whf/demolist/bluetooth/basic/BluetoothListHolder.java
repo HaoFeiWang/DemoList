@@ -1,4 +1,4 @@
-package com.whf.demolist.bluetooth.ble;
+package com.whf.demolist.bluetooth.basic;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

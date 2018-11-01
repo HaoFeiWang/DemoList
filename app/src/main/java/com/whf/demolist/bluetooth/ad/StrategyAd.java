@@ -1,4 +1,4 @@
-package com.whf.demolist.sensor.ad;
+package com.whf.demolist.bluetooth.ad;
 
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.os.ParcelUuid;
@@ -17,4 +17,6 @@ public interface StrategyAd {
     void stopAdvertise(BluetoothLeAdvertiser advertiser);
 
     void parseAdvertise(String address, byte[] content);
+
+    void release();
 }
