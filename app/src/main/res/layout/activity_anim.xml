@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.whf.demolist.anim.AnimActivity">
+
+    <ImageView
+        android:id="@+id/iv_anim"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:src="@color/colorAccent" />
+
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="20dp"
+        android:background="#000000" />
+
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="20dp"
+        android:background="#000000" />
+
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="260dp"
+        android:layout_marginTop="20dp"
+        android:background="#000000" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/iv_anim"
+        android:layout_marginTop="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_accelerate_decelerate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="先加速在减速" />
+            <Button
+                android:id="@+id/btn_accelerate_decelerate2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="先加速在减速2" />
+
+            <Button
+                android:id="@+id/btn_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="匀速" />
+
+            <Button
+                android:id="@+id/btn_accelerate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="持续加速" />
+
+            <Button
+                android:id="@+id/btn_accelerate2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="持续加速2"/>
+
+            <Button
+                android:id="@+id/btn_decelerate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="持续减速" />
+
+            <Button
+                android:id="@+id/btn_decelerate2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="持续减速2" />
+
+            <Button
+                android:id="@+id/btn_anticipate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="先回拉再正常运动" />
+
+            <Button
+                android:id="@+id/btn_overshoot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="超出目标值一点再弹回来" />
+            <Button
+                android:id="@+id/btn_anticipate_overshoot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="回拉，正常，超出目标值一点，弹回来" />
+            <Button
+                android:id="@+id/btn_bounce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="在目标处弹跳" />
+            <Button
+                android:id="@+id/btn_cycle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正余弦曲线" />
+            <Button
+                android:id="@+id/btn_simple_path"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="简单自定义" />
+            <Button
+                android:id="@+id/btn_path"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="自定义运动路径" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

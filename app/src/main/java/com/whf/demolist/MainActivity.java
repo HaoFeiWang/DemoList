@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.whf.demolist.anim.AnimActivity;
+import com.whf.demolist.bluetooth.BluetoothActivity;
 import com.whf.demolist.bluetooth.basic.BleClientActivity;
 import com.whf.demolist.camera.CameraActivity;
 import com.whf.demolist.notification.NotificationActivity;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, SurfaceViewActivity.class));
                 break;
             case R.id.btn_bluetooth:
-                startActivity(new Intent(this, BleClientActivity.class));
+                startActivity(new Intent(this, BluetoothActivity.class));
                 break;
             case R.id.btn_binder:
                 startActivity(new Intent(this, com.whf.demolist.binder.ClientActivity.class));

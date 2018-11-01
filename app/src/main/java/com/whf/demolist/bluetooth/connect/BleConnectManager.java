@@ -1,9 +1,9 @@
 package com.whf.demolist.bluetooth.connect;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
@@ -19,13 +19,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.ParcelUuid;
-import android.support.v4.util.ArraySet;
-import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
-import com.whf.demolist.bluetooth.ad.BleManager;
-
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Ble一对多连接管理
@@ -34,7 +33,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings("WeakerAccess")
 public class BleConnectManager {
-    private static final String TAG = "BLE_TEST_" + BleManager.class.getSimpleName();
+    private static final String TAG = "BLE_TEST_" + BleConnectManager.class.getSimpleName();
 
     private static final int ADVERTISING_TIME = 120 * 1000;
     private static final int MANUFACTURE_ID = 26;
@@ -47,7 +46,6 @@ public class BleConnectManager {
     private static final int SCANNING = 0x0002;
     private static final int PENDING_ADVERTISE = 0x0010;
     private static final int ADVERTISING = 0x0020;
-    private static final int PENDING_CONNECT = 0x0100;
 
     private static BleConnectManager instance;
 
@@ -66,8 +64,10 @@ public class BleConnectManager {
     private AdvertiseCallback adCallback;
     private BluetoothLeAdvertiser advertiser;
 
-    private ArrayMap<String, BluetoothDevice> pendingConnectDevice;
-    private ArrayMap<String, BluetoothGatt> connectedDevice;
+    private Context context;
+    private ConnectConsumer connectConsumer;
+    private ConcurrentHashMap<String, ConnectDevice> pendingConnectDevice;
+    private ConcurrentHashMap<String, ConnectDevice> connectedDevice;
 
     private BleConnectManager.BleBroadCastReceiver bleBroadCastReceiver;
 
@@ -80,13 +80,15 @@ public class BleConnectManager {
     }
 
     private BleConnectManager(Context context) {
+        this.context = context.getApplicationContext();
         this.bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
-        this.pendingConnectDevice = new ArrayMap<>();
-        this.connectedDevice = new ArrayMap<>();
+        this.pendingConnectDevice = new ConcurrentHashMap<>();
+        this.connectedDevice = new ConcurrentHashMap<>();
     }
 
     public void startAdvertise() {
-        if ((state | ADVERTISING) == ADVERTISING) {
+        if ((state & ADVERTISING) == ADVERTISING) {
+            Log.d(TAG, "advertising!");
             return;
         }
 
@@ -143,12 +145,12 @@ public class BleConnectManager {
         adCallback = new AdvertiseCallback() {
             @Override
             public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                super.onStartSuccess(settingsInEffect);
+                Log.d(TAG, "start ad success!");
             }
 
             @Override
             public void onStartFailure(int errorCode) {
-                super.onStartFailure(errorCode);
+                Log.d(TAG, "start ad fail, error code = " + errorCode);
             }
         };
     }
@@ -159,6 +161,7 @@ public class BleConnectManager {
         }
 
         if (advertiser != null && adCallback != null) {
+            Log.d(TAG, "stop advertise!");
             state |= ~(PENDING_ADVERTISE | ADVERTISING);
             advertiser.stopAdvertising(adCallback);
         }
@@ -175,13 +178,15 @@ public class BleConnectManager {
         }
 
         initScanner();
-        iniScanFilter();
+        initScanFilter();
         initScanCallback();
         initScanSetting();
+        initConnectConsumer();
         state |= SCANNING;
         Log.d(TAG, "start scan!");
         scanner.startScan(scanFilter, scanSetting, scanCallback);
     }
+
 
     private void initScanner() {
         if (scanner == null) {
@@ -189,7 +194,7 @@ public class BleConnectManager {
         }
     }
 
-    private void iniScanFilter() {
+    private void initScanFilter() {
         if (scanFilter != null) {
             return;
         }
@@ -218,8 +223,8 @@ public class BleConnectManager {
         scanCallback = new ScanCallback() {
             @Override
             public void onScanResult(int callbackType, ScanResult result) {
-                Log.d(TAG, "scan success call type = " + callbackType + " result = " + result.toString());
-                scanResult(result);
+                //Log.d(TAG, "scan result = " + result.toString());
+                connectScanResult(result);
             }
 
             @Override
@@ -230,12 +235,21 @@ public class BleConnectManager {
         };
     }
 
+    private void initConnectConsumer() {
+        if (connectConsumer != null) {
+            return;
+        }
+        connectConsumer = new ConnectConsumer();
+        connectConsumer.start();
+    }
+
     public void stopScan() {
         if (checkBluetoothDisable(false)) {
             return;
         }
 
         if (scanner != null && scanCallback != null) {
+            Log.d(TAG, "stop scan!");
             state |= ~(PENDING_SCAN | SCANNING);
             scanner.stopScan(scanCallback);
         }
@@ -245,11 +259,15 @@ public class BleConnectManager {
         return !checkBluetoothDeviceEnable() || !checkBluetoothOpen(autoOpen);
     }
 
-    private void scanResult(ScanResult result) {
+    private void connectScanResult(ScanResult result) {
         BluetoothDevice device = result.getDevice();
         String address = device.getAddress();
-        if (!connectedDevice.containsKey(address)) {
-            pendingConnectDevice.put(address, device);
+        if (!connectedDevice.containsKey(address) && !pendingConnectDevice.containsKey(address)) {
+            ConnectDevice connectDevice = new ConnectDevice();
+            connectDevice.setDevice(device);
+            Log.d(TAG, "put new device = " + device.getAddress());
+            pendingConnectDevice.put(address, connectDevice);
+            connectConsumer.notifyConnect();
         }
     }
 
@@ -266,13 +284,19 @@ public class BleConnectManager {
 
     private boolean checkBluetoothDeviceEnable() {
         if (bluetoothManager == null) {
+            Log.d(TAG, "bluetooth manager is null!");
             return false;
         }
         if (bluetoothAdapter == null) {
             bluetoothAdapter = bluetoothManager.getAdapter();
         }
 
-        return bluetoothAdapter != null;
+        boolean enable = bluetoothAdapter != null;
+        if (!enable) {
+            Log.d(TAG, "bluetooth adapter is null!");
+        }
+
+        return enable;
     }
 
     private void registerBroadCast(Context context) {
@@ -319,13 +343,28 @@ public class BleConnectManager {
     private void bluetoothStateOff() {
         Log.d(TAG, "bluetooth state off");
         state = IDLE;
+        release();
     }
 
-    public void release(Context context) {
+    public void release() {
         stopScan();
         stopAdvertise();
-        unregisterBroadCast(context);
         state = IDLE;
+
+        if (connectConsumer != null) {
+            connectConsumer.release();
+        }
+
+        for (Map.Entry<String, ConnectDevice> entry : connectedDevice.entrySet()) {
+            Log.d(TAG, "release gatt = " + entry.getKey());
+            BluetoothGatt gatt = entry.getValue().getGatt();
+            gatt.disconnect();
+            gatt.close();
+        }
+
+        connectedDevice.clear();
+        pendingConnectDevice.clear();
+        unregisterBroadCast(context);
     }
 
     class BleBroadCastReceiver extends BroadcastReceiver {
@@ -334,6 +373,95 @@ public class BleConnectManager {
             String action = intent.getAction();
             if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                 bluetoothStateChange(intent);
+            }
+        }
+    }
+
+    class ConnectConsumer extends Thread {
+
+        private volatile boolean released;
+
+        @Override
+        public void run() {
+            while (!released) {
+                connect();
+            }
+        }
+
+        private synchronized void connect() {
+            if (pendingConnectDevice.size() > 0) {
+
+                ConnectDevice connectDevice = null;
+                //不能使用keySet，因为keySet是1.8才加入的
+                Iterator<Map.Entry<String, ConnectDevice>> entryIterator = pendingConnectDevice.entrySet().iterator();
+                if (entryIterator.hasNext()) {
+                    connectDevice = pendingConnectDevice.remove(entryIterator.next().getKey());
+                }
+
+                if (connectDevice == null) {
+                    return;
+                }
+                BluetoothDevice device = connectDevice.getDevice();
+                if (device == null) {
+                    return;
+                }
+
+                if (connectDevice.getCallback() == null && connectDevice.getGatt() == null) {
+                    BleGattCallback gattCallback = new BleGattCallback();
+                    Log.d(TAG, "start connect device = " + device.getAddress());
+                    BluetoothGatt bluetoothGatt = device.connectGatt(context, false, gattCallback);
+                    if (bluetoothGatt != null) {
+                        connectDevice.setGatt(bluetoothGatt);
+                        connectDevice.setCallback(gattCallback);
+                        connectedDevice.put(device.getAddress(), connectDevice);
+                    }
+                } else {
+                    Log.d(TAG, "retry connect device = " + device.getAddress());
+                    connectDevice.getGatt().connect();
+                }
+            } else {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    //no-op
+                }
+            }
+        }
+
+        public void release() {
+            Log.d(TAG, "release consumer!");
+            released = true;
+            notifyConnect();
+        }
+
+        public synchronized void notifyConnect() {
+            notifyAll();
+        }
+    }
+
+    class BleGattCallback extends BluetoothGattCallback {
+
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+            //status
+            //GATT_SUCCESS : 0：
+
+            //newState
+            //STATE_DISCONNECTED-0；STATE_CONNECTING-1；STATE_CONNECTED-2；STATE_DISCONNECTING-3
+
+            //被连接的蓝牙设备关闭后，会回调status = 19；newState = 0
+            //被连接的蓝牙设备关闭后，再调用connectGatt会回调status = 133；newState = 0
+            BluetoothDevice device = gatt.getDevice();
+            Log.d(TAG, device.getAddress() + " connect state = " + status + " new state = " + newState);
+            if (newState == 0) {
+                ConnectDevice connectDevice = connectedDevice.remove(device.getAddress());
+                if (status == 19 || status == 133) {
+                    gatt.disconnect();
+                    gatt.close();
+                } else {
+                    pendingConnectDevice.put(device.getAddress(), connectDevice);
+                    connectConsumer.notifyConnect();
+                }
             }
         }
     }
