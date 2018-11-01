@@ -39,6 +39,7 @@ public class BleConnectManager {
     private static final int MANUFACTURE_ID = 26;
     private static final byte[] MANUFACTURE_DATA = new byte[]{31};
 
+    @SuppressWarnings("unused")
     private static final ParcelUuid UUID = ParcelUuid.fromString("00001373-0000-1000-8000-00805F9B34FB");
 
     private static final int IDLE = 0x0000;
