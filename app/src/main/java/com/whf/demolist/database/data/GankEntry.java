@@ -10,8 +10,11 @@ import java.util.List;
  */
 @DatabaseTable(tableName = "tb_gank")
 public class GankEntry {
-    @DatabaseField(id = true, uniqueIndex = true)
+    @DatabaseField(id = true)
     private Integer id;
+
+    @DatabaseField(unique = true)
+    private String url;
 
     @DatabaseField
     private String createAt;
@@ -29,13 +32,7 @@ public class GankEntry {
     private String type;
 
     @DatabaseField
-    private String url;
-
-    @DatabaseField
-    private List<String> images;
-
-    @DatabaseField
-    private Boolean used;
+    private boolean used;
 
     @DatabaseField
     private String who;
@@ -96,6 +93,14 @@ public class GankEntry {
         this.url = url;
     }
 
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
+    }
+
     public String getWho() {
         return who;
     }
@@ -104,33 +109,16 @@ public class GankEntry {
         this.who = who;
     }
 
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
-
-    public Boolean getUsed() {
-        return used;
-    }
-
-    public void setUsed(Boolean used) {
-        this.used = used;
-    }
-
     @Override
     public String toString() {
         return "GankEntry{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", createAt='" + createAt + '\'' +
                 ", desc='" + desc + '\'' +
                 ", publishedAt='" + publishedAt + '\'' +
                 ", source='" + source + '\'' +
                 ", type='" + type + '\'' +
                 ", url='" + url + '\'' +
-                ", images='" + images + '\'' +
                 ", used=" + used +
                 ", who='" + who + '\'' +
                 '}';
