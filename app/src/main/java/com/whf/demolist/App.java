@@ -3,7 +3,7 @@ package com.whf.demolist;
 import android.app.Application;
 import android.util.Log;
 
-import com.whf.demolist.common.data.DatabaseHelp;
+import com.whf.demolist.database.data.DatabaseHelp;
 
 /**
  * Created by @author WangHaoFei on 2017/11/13.

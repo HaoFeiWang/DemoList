@@ -1,4 +1,4 @@
-package com.whf.demolist.common.data;
+package com.whf.demolist.database.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

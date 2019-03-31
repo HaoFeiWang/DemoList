@@ -5,9 +5,8 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.j256.ormlite.dao.Dao;
-import com.whf.demolist.common.data.GankDao;
-import com.whf.demolist.common.data.GankEntry;
+import com.whf.demolist.database.data.GankDao;
+import com.whf.demolist.database.data.GankEntry;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

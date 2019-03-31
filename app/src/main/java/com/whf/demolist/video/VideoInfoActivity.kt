@@ -70,8 +70,13 @@ class VideoInfoActivity : AppCompatActivity() {
         val videoMetadata = VideoMetadata()
         try {
             mmr = MediaMetadataRetriever()
+            //网络地址，参数二为请求头
             mmr.setDataSource(dataSource, HashMap<String, String>())
+
+            //获取指定时间的桢
             videoMetadata.previewImage = mmr.getFrameAtTime(START_TIME,MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+
+            //获取视频元数据
             val durationMill = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toInt()
             videoMetadata.duration = "${durationMill / 1000 / 60}分${durationMill / 1000 % 60}"
             videoMetadata.mineType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)

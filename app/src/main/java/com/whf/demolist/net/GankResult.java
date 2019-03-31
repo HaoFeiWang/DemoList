@@ -1,6 +1,6 @@
-package com.whf.demolist.common.net;
+package com.whf.demolist.net;
 
-import com.whf.demolist.common.data.GankEntry;
+import com.whf.demolist.database.data.GankEntry;
 
 import java.util.List;
 

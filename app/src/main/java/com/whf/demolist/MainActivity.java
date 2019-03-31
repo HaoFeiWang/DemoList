@@ -9,6 +9,7 @@ import com.whf.demolist.anim.AnimActivity;
 import com.whf.demolist.bluetooth.BluetoothActivity;
 import com.whf.demolist.bluetooth.basic.BleClientActivity;
 import com.whf.demolist.camera.CameraActivity;
+import com.whf.demolist.database.DatabaseActivity;
 import com.whf.demolist.notification.NotificationActivity;
 import com.whf.demolist.qrcode.QrCodeActivity;
 import com.whf.demolist.surfaceview.SurfaceViewActivity;
@@ -35,8 +36,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_notification).setOnClickListener(this);
         findViewById(R.id.btn_wifi).setOnClickListener(this);
         findViewById(R.id.btn_video).setOnClickListener(this);
+        findViewById(R.id.btn_database).setOnClickListener(this);
     }
-
 
     @Override
     public void onClick(View view) {
@@ -66,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_video:
                 startActivity(new Intent(this, VideoInfoActivity.class));
+                break;
+            case R.id.btn_database:
+                startActivity(new Intent(this, DatabaseActivity.class));
                 break;
             default:
                 break;

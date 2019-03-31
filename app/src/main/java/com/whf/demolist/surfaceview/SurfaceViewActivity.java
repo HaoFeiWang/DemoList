@@ -4,6 +4,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +16,8 @@ import android.view.SurfaceView;
 import android.widget.Button;
 
 import com.whf.demolist.R;
+
+import java.util.List;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
@@ -165,6 +170,6 @@ public class SurfaceViewActivity extends AppCompatActivity implements SurfaceHol
         }
         return super.onTouchEvent(event);
     }
-
-
 }
+
+

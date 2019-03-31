@@ -3,9 +3,9 @@ package com.whf.demolist;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.whf.demolist.common.data.GankEntry;
-import com.whf.demolist.common.net.GankResult;
-import com.whf.demolist.common.net.NetManager;
+import com.whf.demolist.database.data.GankEntry;
+import com.whf.demolist.net.GankResult;
+import com.whf.demolist.net.NetManager;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

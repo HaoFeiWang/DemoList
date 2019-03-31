@@ -1,4 +1,4 @@
-package com.whf.demolist.common.data;
+package com.whf.demolist.database.data;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -12,22 +12,31 @@ import java.util.List;
 public class GankEntry {
     @DatabaseField(id = true, uniqueIndex = true)
     private Integer id;
+
     @DatabaseField
     private String createAt;
+
     @DatabaseField
     private String desc;
+
     @DatabaseField
     private String publishedAt;
+
     @DatabaseField
     private String source;
+
     @DatabaseField
     private String type;
+
     @DatabaseField
     private String url;
+
     @DatabaseField
     private List<String> images;
+
     @DatabaseField
     private Boolean used;
+
     @DatabaseField
     private String who;
 

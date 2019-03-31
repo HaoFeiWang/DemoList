@@ -1,7 +1,5 @@
-package com.whf.demolist.common.net;
+package com.whf.demolist.net;
 
-
-import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.Retrofit;

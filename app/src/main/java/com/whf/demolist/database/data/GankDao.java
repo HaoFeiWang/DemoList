@@ -1,7 +1,6 @@
-package com.whf.demolist.common.data;
+package com.whf.demolist.database.data;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
 
