@@ -17,7 +17,7 @@ import java.util.Map;
  */
 
 public class DatabaseHelp extends OrmLiteSqliteOpenHelper{
-    private static final String DATABASE_NAME = "gank.db";
+    private static final String DATABASE_NAME = "person.db";
     private static final int DATABASE_VERSION = 1;
 
     private Map<String, Dao> daoMap;
@@ -42,7 +42,7 @@ public class DatabaseHelp extends OrmLiteSqliteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
-            TableUtils.createTable(connectionSource, GankEntry.class);
+            TableUtils.createTable(connectionSource, DbPerson.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -52,7 +52,7 @@ public class DatabaseHelp extends OrmLiteSqliteOpenHelper{
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource,
                           int oldVersion, int newVersion) {
         try {
-            TableUtils.dropTable(connectionSource, GankEntry.class, true);
+            TableUtils.dropTable(connectionSource, DbPerson.class, true);
             onCreate(database, connectionSource);
         } catch (SQLException e) {
             e.printStackTrace();

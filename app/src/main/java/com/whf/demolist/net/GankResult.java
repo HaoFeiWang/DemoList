@@ -1,7 +1,5 @@
 package com.whf.demolist.net;
 
-import com.whf.demolist.database.data.GankEntry;
-
 import java.util.List;
 
 /**

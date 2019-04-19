@@ -37,4 +37,34 @@
         android:gravity="center"
         android:text="插入数据"/>
 
+    <TextView
+        android:id="@+id/tv_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#DF7474"
+        android:gravity="center"
+        android:text="删除数据"/>
+
+    <TextView
+        android:id="@+id/tv_clean"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#DF7474"
+        android:gravity="center"
+        android:text="清空数据"/>
+
+    <TextView
+        android:id="@+id/tv_unique_combo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#DF7474"
+        android:gravity="center"
+        android:text="联合主键验证"/>
+
 </LinearLayout>

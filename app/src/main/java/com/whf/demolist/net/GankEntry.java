@@ -1,41 +1,30 @@
-package com.whf.demolist.database.data;
-
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+package com.whf.demolist.net;
 
 import java.util.List;
 
 /**
  * Created by @author WangHaoFei on 2017/11/13.
  */
-@DatabaseTable(tableName = "tb_gank")
 public class GankEntry {
-    @DatabaseField(id = true)
     private Integer id;
 
-    @DatabaseField(unique = true)
     private String url;
 
-    @DatabaseField
     private String createAt;
 
-    @DatabaseField
     private String desc;
 
-    @DatabaseField
     private String publishedAt;
 
-    @DatabaseField
     private String source;
 
-    @DatabaseField
     private String type;
 
-    @DatabaseField
     private boolean used;
 
-    @DatabaseField
     private String who;
+
+    private List<String> images;
 
     public Integer getId() {
         return id;
@@ -109,18 +98,27 @@ public class GankEntry {
         this.who = who;
     }
 
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
     @Override
     public String toString() {
         return "GankEntry{" +
                 "id=" + id +
+                ", url='" + url + '\'' +
                 ", createAt='" + createAt + '\'' +
                 ", desc='" + desc + '\'' +
                 ", publishedAt='" + publishedAt + '\'' +
                 ", source='" + source + '\'' +
                 ", type='" + type + '\'' +
-                ", url='" + url + '\'' +
                 ", used=" + used +
                 ", who='" + who + '\'' +
+                ", images=" + images +
                 '}';
     }
 }

@@ -3,7 +3,7 @@ package com.whf.demolist;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.whf.demolist.database.data.GankEntry;
+import com.whf.demolist.net.GankEntry;
 import com.whf.demolist.net.GankResult;
 import com.whf.demolist.net.NetManager;
 

@@ -5,8 +5,8 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.whf.demolist.database.data.GankDao;
-import com.whf.demolist.database.data.GankEntry;
+import com.whf.demolist.database.data.PersonDao;
+import com.whf.demolist.net.GankEntry;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -28,13 +28,13 @@ public class DbUnitTest {
     private static final String TAG = "UnitTest";
 
     private static Context appContext;
-    private static GankDao gankDao;
+    private static PersonDao personDao;
     private static ArrayList<GankEntry> gankList;
 
     @BeforeClass
     public static void init() {
         appContext = InstrumentationRegistry.getTargetContext();
-        gankDao = new GankDao(appContext);
+        personDao = new PersonDao(appContext);
         initDate();
     }
 
@@ -91,36 +91,35 @@ public class DbUnitTest {
 
     @Test
     public void testDatabase() {
-        List<GankEntry> oneList = gankDao.queryOrderGankList();
+        List<GankEntry> oneList = personDao.queryOrderPerson();
         Log.i(TAG, "数据查询结果：" + oneList.toString());
         assertEquals(gankList.toString(), oneList.toString());
 
-        gankDao.addGankList(gankList);
+        personDao.addGankList(gankList);
         Log.i(TAG, "数据插入成功");
 
-        List<GankEntry> twoList = gankDao.queryOrderGankList();
+        List<GankEntry> twoList = personDao.queryOrderPerson();
         Log.i(TAG, "数据查询结果：" + twoList.toString());
         assertEquals(gankList.toString(), twoList.toString());
 
-        GankEntry gankEntry = gankDao.queryGankFromId(1);
+        GankEntry gankEntry = personDao.queryPersonFromId(1);
         Log.i(TAG, "ID为1的数据为：" + (gankEntry == null ? "null" : gankEntry.toString()));
         assertEquals(gankList.get(0).toString(), gankEntry.toString());
 
-        gankDao.deleteGank(gankEntry);
+        personDao.deletePerson(gankEntry);
         Log.i(TAG, "ID为1的数据删除完成");
 
 
-        List<GankEntry> threeList = gankDao.queryOrderGankList();
+        List<GankEntry> threeList = personDao.queryOrderPerson();
         Log.i(TAG, "数据查询结果：" + threeList.toString());
         gankList.remove(0);
         assertEquals(gankList.toString(), threeList.toString());
     }
 
 
-
     @AfterClass
     public static void release() {
-        gankDao.cleanGankList();
+        personDao.cleanGankList();
     }
 
 }
