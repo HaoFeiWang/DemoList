@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.View
 import com.whf.demolist.R
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -17,9 +18,14 @@ import java.nio.channels.Channel
 import java.nio.channels.FileLock
 
 
+/**
+ * 测试 Java 语法
+ */
 class JavaActivity : AppCompatActivity() {
 
     private val tag = "Test_"
+
+    //kotlin中没有 volatile 关键字，需要使用@Volatile注解
     @Volatile
     private var writeNum = 1
 
@@ -27,11 +33,14 @@ class JavaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_java)
 
+        tv_file_channel.setOnClickListener(View.OnClickListener {})
         tv_file_lock_write.setOnClickListener { testFileLockWrite() }
         tv_file_lock_read.setOnClickListener { testFileLockRead() }
-
     }
 
+    /**
+     * 文件锁测试：读
+     */
     private fun testFileLockRead() {
         Log.d(tag, "test file lock read = $writeNum")
         Observable
@@ -54,17 +63,13 @@ class JavaActivity : AppCompatActivity() {
                             lockFile.createNewFile()
                         }
 
-                        //获取文件锁
-                        //快速执行6次该方法，验证并发写的问题，由结果可知一个文件不可能同时被多个线程写
-                        //有并发：222222222233333333334444444444555555555566666666667777777777
-                        //无并发：2222222222
-//                        accessFile = RandomAccessFile(lockFilePath, "rw")
-//                        channel = accessFile.channel
-//                        fileLock = channel.tryLock()
-//                        if (fileLock === null) {
-//                            it.onError(Throwable(""))
-//                            return@create
-//                        }
+                        accessFile = RandomAccessFile(lockFilePath, "rw")
+                        channel = accessFile.channel
+                        fileLock = channel.tryLock()
+                        if (fileLock === null) {
+                            it.onError(Throwable(""))
+                            return@create
+                        }
 
 
                         val result = StringBuilder()
@@ -76,7 +81,7 @@ class JavaActivity : AppCompatActivity() {
                         for (i in 1..5) {
                             Thread.sleep(1000)
                             val readSize = fileReader.read(buffer, 0, buffer.size)
-                            if(readSize>0){
+                            if (readSize > 0) {
                                 length += readSize
                                 result.append(buffer, 0, readSize)
                             }
@@ -114,6 +119,14 @@ class JavaActivity : AppCompatActivity() {
                 })
     }
 
+    /**
+     * 文件锁测试：写
+     * 快速执行6次该方法，验证并发写的问题，由结果可知一个文件不可能同时被多个线程写
+     * 因为所有的系统调用原子操作，所以不可能存在多线程穿插在一个文件写
+     *
+     * 有并发：222222222233333333334444444444555555555566666666667777777777
+     * 无并发：2222222222
+     */
     private fun testFileLockWrite() {
         writeNum++
         Log.d(tag, "test file lock write = $writeNum")
@@ -138,17 +151,14 @@ class JavaActivity : AppCompatActivity() {
                             lockFile.createNewFile()
                         }
 
-                        //获取文件锁
-                        //快速执行6次该方法，验证并发写的问题，由结果可知一个文件不可能同时被多个线程写
-                        //有并发：222222222233333333334444444444555555555566666666667777777777
-                        //无并发：2222222222
-//                        accessFile = RandomAccessFile(lockFilePath, "rw")
-//                        channel = accessFile.channel
-//                        fileLock = channel.tryLock()
-//                        if (fileLock === null) {
-//                            it.onError(Throwable(""))
-//                            return@create
-//                        }
+                        //文件锁
+                        accessFile = RandomAccessFile(lockFilePath, "rw")
+                        channel = accessFile.channel
+                        fileLock = channel.tryLock()
+                        if (fileLock === null) {
+                            it.onError(Throwable(""))
+                            return@create
+                        }
 
                         val objectFilePath = "$folderPath/object.txt"
                         val objectFile = File(objectFilePath)

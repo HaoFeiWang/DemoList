@@ -27,7 +27,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".language.JavaActivity"></activity>
+        <activity android:name=".language.KotlinActivity"></activity>
+        <activity android:name=".language.JavaActivity" />
         <activity android:name=".database.DatabaseActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

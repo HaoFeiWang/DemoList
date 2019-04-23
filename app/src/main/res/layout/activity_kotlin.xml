@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".language.JavaActivity"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+
+    <TextView
+        android:id="@+id/tv_thread"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#BBBABA"
+        android:layout_marginTop="10dp"
+        android:text="多线程"
+        android:textColor="#000000"
+        android:gravity="center"/>
+
+</LinearLayout>

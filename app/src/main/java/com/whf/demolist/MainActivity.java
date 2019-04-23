@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.whf.demolist.anim.AnimActivity;
 import com.whf.demolist.bluetooth.BluetoothActivity;
-import com.whf.demolist.bluetooth.basic.BleClientActivity;
 import com.whf.demolist.camera.CameraActivity;
 import com.whf.demolist.database.DatabaseActivity;
 import com.whf.demolist.language.JavaActivity;
@@ -28,7 +27,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initView() {
-        findViewById(R.id.btn_language).setOnClickListener(this);
+        findViewById(R.id.btn_java_language).setOnClickListener(this);
+        findViewById(R.id.btn_kotlin_language).setOnClickListener(this);
         findViewById(R.id.btn_anim).setOnClickListener(this);
         findViewById(R.id.btn_qrcode).setOnClickListener(this);
         findViewById(R.id.btn_camera).setOnClickListener(this);
@@ -44,7 +44,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_language:
+            case R.id.btn_java_language:
+                startActivity(new Intent(this, JavaActivity.class));
+                break;
+            case R.id.btn_kotlin_language:
                 startActivity(new Intent(this, JavaActivity.class));
                 break;
             case R.id.btn_anim:
