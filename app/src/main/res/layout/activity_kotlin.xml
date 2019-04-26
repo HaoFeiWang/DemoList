@@ -7,14 +7,13 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-
     <TextView
-        android:id="@+id/tv_thread"
+        android:id="@+id/package_method"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:background="#BBBABA"
         android:layout_marginTop="10dp"
-        android:text="多线程"
+        android:text="包级函数"
         android:textColor="#000000"
         android:gravity="center"/>
 

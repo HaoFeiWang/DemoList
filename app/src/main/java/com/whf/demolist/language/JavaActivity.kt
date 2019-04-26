@@ -23,7 +23,7 @@ import java.nio.channels.FileLock
  */
 class JavaActivity : AppCompatActivity() {
 
-    private val tag = "Test_"
+    private val tag = "Test_"+this.javaClass
 
     //kotlin中没有 volatile 关键字，需要使用@Volatile注解
     @Volatile
