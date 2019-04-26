@@ -6,6 +6,7 @@ import android.os.Environment
 import android.util.Log
 import android.view.View
 import com.whf.demolist.R
+import com.whf.demolist.language.kt.tag
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,8 +23,6 @@ import java.nio.channels.FileLock
  * 测试 Java 语法
  */
 class JavaActivity : AppCompatActivity() {
-
-    private val tag = "Test_"+this.javaClass
 
     //kotlin中没有 volatile 关键字，需要使用@Volatile注解
     @Volatile

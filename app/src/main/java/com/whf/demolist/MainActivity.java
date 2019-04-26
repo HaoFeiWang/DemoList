@@ -10,6 +10,7 @@ import com.whf.demolist.bluetooth.BluetoothActivity;
 import com.whf.demolist.camera.CameraActivity;
 import com.whf.demolist.database.DatabaseActivity;
 import com.whf.demolist.language.JavaActivity;
+import com.whf.demolist.language.KotlinActivity;
 import com.whf.demolist.notification.NotificationActivity;
 import com.whf.demolist.qrcode.QrCodeActivity;
 import com.whf.demolist.surfaceview.SurfaceViewActivity;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, JavaActivity.class));
                 break;
             case R.id.btn_kotlin_language:
-                startActivity(new Intent(this, JavaActivity.class));
+                startActivity(new Intent(this, KotlinActivity.class));
                 break;
             case R.id.btn_anim:
                 startActivity(new Intent(this, AnimActivity.class));
