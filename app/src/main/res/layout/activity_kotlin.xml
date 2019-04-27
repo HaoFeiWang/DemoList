@@ -8,12 +8,33 @@
     android:padding="10dp">
 
     <TextView
-        android:id="@+id/package_method"
+        android:id="@+id/package_method_for"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:background="#BBBABA"
         android:layout_marginTop="10dp"
         android:text="包级函数 - For循环"
+        android:textColor="#000000"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/package_method_try"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#BBBABA"
+        android:layout_marginTop="10dp"
+        android:text="包级函数 - Try表达式"
+        android:textColor="#000000"
+        android:gravity="center"/>
+
+
+    <TextView
+        android:id="@+id/package_method_collection"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#BBBABA"
+        android:layout_marginTop="10dp"
+        android:text="包级函数 - 集合测试"
         android:textColor="#000000"
         android:gravity="center"/>
 
