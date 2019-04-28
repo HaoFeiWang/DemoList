@@ -1,51 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".language.JavaActivity"
     android:orientation="vertical"
-    android:padding="10dp">
+    tools:context=".language.JavaActivity" >
 
-    <TextView
-        android:id="@+id/package_method_for"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="#BBBABA"
-        android:layout_marginTop="10dp"
-        android:text="包级函数 - For循环"
-        android:textColor="#000000"
-        android:gravity="center"/>
+        android:layout_height="wrap_content"
+        tools:context=".language.JavaActivity"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-    <TextView
-        android:id="@+id/package_method_try"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="#BBBABA"
-        android:layout_marginTop="10dp"
-        android:text="包级函数 - Try表达式"
-        android:textColor="#000000"
-        android:gravity="center"/>
+        <TextView
+            android:id="@+id/package_method_for"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#BBBABA"
+            android:text="包级函数 - For循环"
+            android:textColor="#000000"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/package_method_try"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#BBBABA"
+            android:layout_marginTop="10dp"
+            android:text="包级函数 - Try表达式"
+            android:textColor="#000000"
+            android:gravity="center" />
 
 
-    <TextView
-        android:id="@+id/package_method_collection"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="#BBBABA"
-        android:layout_marginTop="10dp"
-        android:text="包级函数 - 集合测试"
-        android:textColor="#000000"
-        android:gravity="center"/>
+        <TextView
+            android:id="@+id/package_method_collection"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#BBBABA"
+            android:layout_marginTop="10dp"
+            android:text="包级函数 - 集合测试"
+            android:textColor="#000000"
+            android:gravity="center" />
 
-    <TextView
-        android:id="@+id/package_method_coroutine"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="#BBBABA"
-        android:layout_marginTop="10dp"
-        android:text="协程测试"
-        android:textColor="#000000"
-        android:gravity="center"/>
+        <TextView
+            android:id="@+id/start_coroutine"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#BBBABA"
+            android:layout_marginTop="10dp"
+            android:text="协程启动测试"
+            android:textColor="#000000"
+            android:gravity="center" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/cancel_coroutine"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#BBBABA"
+            android:layout_marginTop="10dp"
+            android:text="协程取消测试"
+            android:textColor="#000000"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/flag_coroutine"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#BBBABA"
+            android:layout_marginTop="10dp"
+            android:text="协程标志位"
+            android:textColor="#000000"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+</ScrollView>
