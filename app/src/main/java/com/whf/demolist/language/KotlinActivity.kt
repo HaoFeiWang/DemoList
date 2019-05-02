@@ -50,6 +50,29 @@ class KotlinActivity : AppCompatActivity() {
         flag_coroutine.setOnClickListener {
             flagCoroutine()
         }
+
+        test_async.setOnClickListener {
+            testAsync()
+        }
+    }
+
+    private fun testAsync() {
+        runBlocking {
+            //async返回一个Deferred（轻量级的非阻塞 future），它也是一个Job
+            val async1 = async {
+                delay(1000)
+                Log.d(TAG,"async 1 delay finish!")
+                1
+            }
+            val async2 = async {
+                delay(1000)
+                Log.d(TAG,"async 2 delay finish")
+                2
+            }
+
+            Log.d(TAG,"async 1 and 2 end!")
+            Log.d(TAG,"async 1 = ${async1.await()} async 2 = ${async2.await()}!")
+        }
     }
 
     private fun flagCoroutine() {

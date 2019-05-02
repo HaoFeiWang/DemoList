@@ -73,6 +73,16 @@
             android:textColor="#000000"
             android:gravity="center" />
 
+        <TextView
+            android:id="@+id/test_async"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#BBBABA"
+            android:layout_marginTop="10dp"
+            android:text="Async测试"
+            android:textColor="#000000"
+            android:gravity="center" />
+
     </LinearLayout>
 
 </ScrollView>
