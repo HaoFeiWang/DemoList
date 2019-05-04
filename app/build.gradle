@@ -60,4 +60,8 @@ dependencies {
     //implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.71"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.0"
 
+    //WebView的DsBridge
+    implementation 'com.github.wendux:DSBridge-Android:3.0-SNAPSHOT'
+
+
 }

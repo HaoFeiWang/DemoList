@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-cmn-Hans">
+    <meta charset="UTF-8">
+    <title>DSBridge Test</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=0.5,user-scalable=no"/>
+    <script src="https://cdn.jsdelivr.net/npm/dsbridge/dist/dsbridge.js"></script>
+</head>
+<style>
+    .btn {
+        text-align: center;
+        background: #d8d8d8;
+        color: #222;
+        padding: 20px;
+        margin: 30px;
+        font-size: 24px;
+        border-radius: 4px;
+        box-shadow: 4px 2px 10px #999;
+    }
+
+    .btn:active {
+        opacity: .7;
+        box-shadow: 4px 2px 10px #555;
+    }
+</style>
+<body>
+<div class="btn" onclick="toastMethod()">toastMethod</div>
+<div class="btn" onclick="getAppData()">getAppData</div>
+<script>
+
+    //Js同步调用Native（测试OK）
+    function toastMethod() {
+        dsBridge.call("toastMethod","Hello XTC!");
+    }
+
+    //Js异步调用Native（测试OK）
+    function getAppData() {
+        dsBridge.call("getAppData","[\n" +
+                "  \"firmwareVersion\",\n" +
+                "  \"watchId\",\n" +
+                "  \"model\",\n" +
+                "  \"bindNumber\",\n" +
+                "  \"phoneNumber\",\n" +
+                "  \"sdkVersion\",\n" +
+                "  \"appVersion\",\n" +
+                "  \"region\",\n" +
+                "  \"language\",\n" +
+                "  \"network\"\n" +
+                "]",function (ret) {
+            console.log(ret);
+        })
+    }
+
+    //推送数据注册
+    dsBridge.register("pushData", function (param1, param2) {
+
+                })
+</script>
+</body>
+</html>

@@ -75,6 +75,7 @@
         <activity android:name=".wifi.WifiChatActivity" />
         <activity android:name=".bluetooth.BluetoothActivity" />
         <activity android:name=".bluetooth.connect.BleConnectActivity" />
+        <activity android:name=".web.WebViewActivity"></activity>
     </application>
 
 </manifest>

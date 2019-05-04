@@ -1,5 +1,6 @@
 package com.whf.demolist.language.kt
 
+import android.text.TextUtils
 import android.util.Log
 import java.lang.Exception
 
@@ -40,13 +41,15 @@ fun testFor() {
     maps[1] = "b"
     maps[2] = "c"
 
-    //遍历map
+    //遍历map，解构
     for ((key, value) in maps) {
         Log.d(TAG, "test for map key = $key , value = $value")
     }
 }
 
-
+/**
+ * when操作符
+ */
 fun testWhen(age: Int): String =
         when {
             age < 18 -> "未成年"
@@ -54,6 +57,9 @@ fun testWhen(age: Int): String =
             else -> "骚年"
         }
 
+/**
+ * in 操作符测试
+ */
 fun testIn() {
 
     3 in 1..5
@@ -63,7 +69,9 @@ fun testIn() {
     "b" !in arrayListOf("a", "b", "c")
 }
 
-
+/**
+ * try-cache 测试
+ */
 fun testTry() {
     Log.d(TAG, "start test try!")
     val number: Int = try {
@@ -77,10 +85,10 @@ fun testTry() {
     Log.d(TAG, "number is $number")
 }
 
-
+/**
+ * 集合方法测试
+ */
 fun testCollection() {
-
-
     val set = hashSetOf(1, 2, 3)
     Log.d(TAG, "hashSetOf class = ${set.javaClass.simpleName} ")
 
@@ -89,9 +97,9 @@ fun testCollection() {
     val maxValue = set.max()
     val last = set.last()
 
-    val array = arrayOf("b","c","d")
+    val array = arrayOf("b", "c", "d")
     //可变参数中如果是数组，需要用展开运算符将数组展开
-    val list = listOf("a",*array)
+    val list = listOf("a", *array)
 
     val arrayList = arrayListOf(1, 2, 3)
     Log.d(TAG, "arrayListOf class = ${arrayList.javaClass.simpleName} ")
@@ -100,4 +108,47 @@ fun testCollection() {
     val hashMap = hashMapOf(1 to "a", 2 to "b", 3 to "c")
     Log.d(TAG, "hashMapOf class = ${hashMap.javaClass.simpleName} ")
 
+}
+
+/**
+ * 字符串扩展函数测试
+ */
+fun testString() {
+    val str = "12.345-6.A"
+    Log.d(TAG, "split result：${str.split("""\.|-""".toRegex())}")
+    Log.d(TAG, "split result2: ${str.split('.', '-')}")
+
+    val path = "/Users/whf/kotlin/learn.pdf"
+    Log.d(TAG, "directory: ${path.substringBeforeLast('/')}")
+    Log.d(TAG, "fullName: ${path.substringAfterLast('/')}")
+}
+
+/**
+ * 局部方法测试
+ */
+fun testPartMethod(person: Person) {
+    //可读性更强的方式推荐将其提取为 Person 的扩展方法
+    fun checkParam(value: String): Boolean {
+        if (TextUtils.isEmpty(value)) {
+            Log.d(TAG, "$person param check fail!")
+            return false
+        }
+        return true
+    }
+
+    if (checkParam(person.idCard)
+            && checkParam(person.name)) {
+        Log.d(TAG, "$person param check success!")
+    }
+}
+
+/**
+ * 继承测试
+ */
+fun testExtend(){
+    val student = Student()
+    student.idCard = "123"
+    student.name = "Jack"
+    student.age = 12
+    student.sex = 1
 }

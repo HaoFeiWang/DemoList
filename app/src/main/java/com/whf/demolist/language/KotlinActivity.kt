@@ -4,12 +4,9 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.whf.demolist.R
-import com.whf.demolist.language.kt.testCollection
+import com.whf.demolist.language.kt.*
 
 //包级函数不在同一个包也需要导包
-import com.whf.demolist.language.kt.testFor
-import com.whf.demolist.language.kt.testTry
-import com.whf.demolist.language.kt.TAG
 
 //不需要 findViewById 的导包
 import kotlinx.android.synthetic.main.activity_kotlin.*
@@ -38,6 +35,15 @@ class KotlinActivity : AppCompatActivity() {
             testCollection()
         }
 
+        package_method_string.setOnClickListener {
+            testString()
+        }
+
+        package_part_method.setOnClickListener {
+            val person = Person()
+            testPartMethod(person)
+        }
+
         start_coroutine.setOnClickListener {
             testCoroutine()
         }
@@ -61,17 +67,17 @@ class KotlinActivity : AppCompatActivity() {
             //async返回一个Deferred（轻量级的非阻塞 future），它也是一个Job
             val async1 = async {
                 delay(1000)
-                Log.d(TAG,"async 1 delay finish!")
+                Log.d(TAG, "async 1 delay finish!")
                 1
             }
             val async2 = async {
                 delay(1000)
-                Log.d(TAG,"async 2 delay finish")
+                Log.d(TAG, "async 2 delay finish")
                 2
             }
 
-            Log.d(TAG,"async 1 and 2 end!")
-            Log.d(TAG,"async 1 = ${async1.await()} async 2 = ${async2.await()}!")
+            Log.d(TAG, "async 1 and 2 end!")
+            Log.d(TAG, "async 1 = ${async1.await()} async 2 = ${async2.await()}!")
         }
     }
 
@@ -89,7 +95,7 @@ class KotlinActivity : AppCompatActivity() {
             //检查取消标志位，只输出了3个数
             val job = GlobalScope.launch {
                 var i = 0
-                while (isActive && i<20) {
+                while (isActive && i < 20) {
                     Log.d(TAG, "job is ${i++}")
                 }
             }
