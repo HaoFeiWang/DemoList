@@ -3,7 +3,7 @@ package com.whf.demolist.language.kt
 /**
  * 单例类
  */
-object Teacher {
+object Jack {
 
     var age = 18
 

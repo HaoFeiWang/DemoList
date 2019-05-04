@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rl_root"
+    tools:context=".web.WebViewActivity">
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="50dp"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="1dp">
+
+            <TextView
+                android:id="@+id/tv_back"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="#23FD0404"
+                android:gravity="center"
+                android:text="back"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_forward"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:background="#23FD0404"
+                android:gravity="center"
+                android:text="forward"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_pause"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:background="#23FD0404"
+                android:gravity="center"
+                android:text="pause"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_resume"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:background="#23FD0404"
+                android:gravity="center"
+                android:text="resume"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_call_js"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:background="#23FD0404"
+                android:gravity="center"
+                android:textSize="10sp"
+                android:text="调用Js"/>
+
+            <TextView
+                android:id="@+id/tv_call_js_async"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:background="#23FD0404"
+                android:gravity="center"
+                android:textSize="10sp"
+                android:text="异步Js"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>
