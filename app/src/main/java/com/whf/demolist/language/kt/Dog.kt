@@ -2,6 +2,10 @@ package com.whf.demolist.language.kt
 
 class Dog : Animal {
 
+    //internal修饰符，编译成java代码后，其成员变量为private
+    //get/set方法为 getName$app setName$app
+    internal var name = ""
+
     override fun eat() {
 
     }
