@@ -152,3 +152,11 @@ fun testExtend(){
     student.age = 12
     student.sex = 1
 }
+
+/**
+ * 测试 internal 操作符
+ */
+fun testInternal(){
+    val dog = Dog()
+    val name = dog.name
+}
