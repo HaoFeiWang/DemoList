@@ -9,6 +9,6 @@ public class Test {
      */
     public void testInternal(){
         Dog dog = new Dog();
-        dog.getName$app();
+        //dog.getName$app();
     }
 }

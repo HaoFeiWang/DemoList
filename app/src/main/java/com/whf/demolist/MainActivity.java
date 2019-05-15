@@ -12,6 +12,7 @@ import com.whf.demolist.database.DatabaseActivity;
 import com.whf.demolist.language.JavaActivity;
 import com.whf.demolist.language.KotlinActivity;
 import com.whf.demolist.notification.NotificationActivity;
+import com.whf.demolist.pinyin.PinYinActivity;
 import com.whf.demolist.qrcode.QrCodeActivity;
 import com.whf.demolist.surfaceview.SurfaceViewActivity;
 import com.whf.demolist.wifi.WifiActivity;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_wifi).setOnClickListener(this);
         findViewById(R.id.btn_video).setOnClickListener(this);
         findViewById(R.id.btn_database).setOnClickListener(this);
+        findViewById(R.id.btn_pinyin).setOnClickListener(this);
     }
 
     @Override
@@ -79,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_database:
                 startActivity(new Intent(this, DatabaseActivity.class));
+                break;
+            case R.id.btn_pinyin:
+                startActivity(new Intent(this, PinYinActivity.class));
                 break;
             default:
                 break;

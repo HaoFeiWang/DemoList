@@ -10,4 +10,22 @@ class Student: Person() {
     override fun eat(){
 
     }
+
+    /**
+     * 内部类默认为 static
+     */
+    class School{
+
+    }
+
+    /**
+     * 非静态内部类需要用 inner 修饰
+     */
+    inner class Teacher{
+
+        fun getOutter():Student{
+            //引用外部类对象
+            return this@Student
+        }
+    }
 }
