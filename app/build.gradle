@@ -63,5 +63,8 @@ dependencies {
     //WebView的DsBridge
     implementation 'com.github.wendux:DSBridge-Android:3.0-SNAPSHOT'
 
+    implementation 'com.github.promeg:tinypinyin:2.0.3'
+    implementation 'com.belerweb:pinyin4j:2.5.1'
+
 
 }

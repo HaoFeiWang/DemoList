@@ -160,3 +160,12 @@ fun testInternal(){
     val dog = Dog()
     val name = dog.name
 }
+
+/**
+ * 测试密封类
+ */
+fun testSealed(e:Expr){
+    when(e){
+        is Expr.Num -> e.value
+    }
+}
