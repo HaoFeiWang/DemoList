@@ -8,7 +8,7 @@ import java.lang.reflect.Proxy;
  * Created by WHF on 2017/11/5.
  */
 
-public abstract class MvpBasePresent<M extends IModel, V extends IView> {
+public abstract class MvpBasePresent<M extends IModel, V extends Contract.BaseView> implements Contract.BasePresenter {
 
     protected V view;
     protected M model;

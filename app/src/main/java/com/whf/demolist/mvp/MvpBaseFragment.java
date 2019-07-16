@@ -11,8 +11,8 @@ import android.view.ViewGroup;
  * Created by WHF on 2017/11/5.
  */
 
-public abstract class MvpBaseFragment<M extends IModel,V extends IView, P extends MvpBasePresent<M,V>>
-        extends Fragment implements IView {
+public abstract class MvpBaseFragment<M extends IModel,V extends Contract.BaseView, P extends MvpBasePresent<M,V>>
+        extends Fragment implements Contract.BaseView {
 
     protected P present;
 
