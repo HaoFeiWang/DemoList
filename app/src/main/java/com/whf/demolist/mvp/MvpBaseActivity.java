@@ -8,8 +8,8 @@ import android.support.v7.app.AppCompatActivity;
  * Created by WHF on 2017/11/5.
  */
 
-public abstract class MvpBaseActivity<M extends IModel,V extends IView,P extends MvpBasePresent<M,V>>
-        extends AppCompatActivity implements IView {
+public abstract class MvpBaseActivity<M extends IModel,V extends Contract.BaseView,P extends MvpBasePresent<M,V>>
+        extends AppCompatActivity implements Contract.BaseView {
 
     protected P present;
 
