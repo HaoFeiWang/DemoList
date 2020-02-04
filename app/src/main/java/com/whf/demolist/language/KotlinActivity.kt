@@ -93,7 +93,7 @@ class KotlinActivity : AppCompatActivity() {
             }*/
 
             //检查取消标志位，只输出了3个数
-            val job = GlobalScope.launch {
+            val job = GlobalScope.launch (){
                 var i = 0
                 while (isActive && i < 20) {
                     Log.d(TAG, "job is ${i++}")
@@ -116,7 +116,6 @@ class KotlinActivity : AppCompatActivity() {
             delay(6000)
             Log.d(tag, "coroutine1 end!")
         }
-
 
         //锁住线程，直到内部协程代码执行完成
         Log.d(tag, "=== runBlocking start === ")

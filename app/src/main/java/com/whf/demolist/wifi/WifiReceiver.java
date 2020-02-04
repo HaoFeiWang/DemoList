@@ -7,6 +7,12 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Created by @author WangHaoFei on 2018/8/13.
  */
@@ -19,7 +25,6 @@ public class WifiReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
         if (intent.getAction() == null) {
             Log.e(TAG, "wifi receiver action is null!");
             return;

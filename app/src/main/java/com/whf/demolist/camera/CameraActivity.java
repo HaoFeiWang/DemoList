@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
 import com.whf.demolist.R;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
@@ -35,9 +37,6 @@ public class CameraActivity extends AppCompatActivity implements SurfaceHolder.C
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         openCamera();
-        setCameraParameters();
-        startPreview(holder);
-        startAutoFocus();
     }
 
     /**
@@ -52,7 +51,7 @@ public class CameraActivity extends AppCompatActivity implements SurfaceHolder.C
                     camera.setPreviewCallback(new Camera.PreviewCallback() {
                         @Override
                         public void onPreviewFrame(byte[] data, Camera camera) {
-                            Log.d(TAG, "Current Thread = " + Thread.currentThread());
+                            //Log.d(TAG, "Current Thread = " + Thread.currentThread());
                         }
                     });
                 } else {
@@ -64,7 +63,50 @@ public class CameraActivity extends AppCompatActivity implements SurfaceHolder.C
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        Log.d(TAG, "surface width = " + width + " height = " + height);
+        Camera.Parameters parameters = camera.getParameters();
 
+        Camera.Size previewSize = parameters.getPreviewSize();
+        Log.i(TAG, "preview size = " + previewSize.width + "," + previewSize.height);
+
+        List<Camera.Size> previewSizeList = parameters.getSupportedPreviewSizes();
+        for (Camera.Size size : previewSizeList) {
+            Log.i(TAG, "support preview size = " + size.width + "," + size.height);
+        }
+
+        //反转List,从小到大排列
+        Collections.reverse(previewSizeList);
+
+        //设置相机预览尺寸比例和surface的尺寸比例相同
+        int finalWidth = 0;
+        int finalHeight = 0;
+        float surfaceProportion = height / (float) width;
+        float difference = Integer.MAX_VALUE;
+        for (Camera.Size size : previewSizeList) {
+            float proportion = size.width / (float) size.height;
+            float curDiff = Math.abs(proportion - surfaceProportion);
+
+            if (Math.abs(proportion - surfaceProportion) < difference) {
+                difference = curDiff;
+                finalWidth = size.width;
+                finalHeight = size.height;
+            }
+        }
+
+        Log.d(TAG, "final width = " + finalWidth + " height = " + finalHeight);
+        parameters.setPreviewSize(finalWidth, finalHeight);
+
+        setSceneMode(parameters);
+        setFocusMode(parameters);
+        Log.d(TAG, "Current Scene Mode = " + parameters.getSceneMode());
+        Log.d(TAG, "Current Focus Mode = " + parameters.getFocusMode());
+
+        //预览尺寸必须在开启预览前设置否则会崩溃
+        camera.setParameters(parameters);
+
+        setCameraOrientation();
+        startPreview(holder);
+        startAutoFocus();
     }
 
     @Override
@@ -109,29 +151,15 @@ public class CameraActivity extends AppCompatActivity implements SurfaceHolder.C
         }
     }
 
-    private void setCameraParameters() {
-        Camera.Parameters parameters = camera.getParameters();
-
-        setSceneMode(parameters);
-        setFocusMode(parameters);
-
-        try {
-            camera.setParameters(parameters);
-        } catch (Exception e) {
-            Log.e(TAG, "Set Camera Parameters Error = " + e.toString());
-        }
-
-        Log.d(TAG, "Current Scene Mode = " + parameters.getSceneMode());
-        Log.d(TAG, "Current Focus Mode = " + parameters.getFocusMode());
-
-        setCameraOrientation();
-    }
-
     /**
      * 设置场景模式
      */
     private void setSceneMode(Camera.Parameters parameters) {
         List<String> sceneModeList = parameters.getSupportedSceneModes();
+        if (sceneModeList == null) {
+            parameters.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
+            return;
+        }
 
         for (String sceneMode : sceneModeList) {
             Log.d(TAG, "Support Scene Mode = " + sceneMode);
