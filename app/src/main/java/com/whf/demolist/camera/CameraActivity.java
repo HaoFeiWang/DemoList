@@ -185,5 +185,35 @@ public class CameraActivity extends AppCompatActivity implements SurfaceHolder.C
         }
     }
 
+    //设置预览帧监听，用于图像识别等，方案三选一
+    private void setPreviewCallback(){
+        //方式一：使用此方法注册预览回调接口，onPreviewFrame()方法会一直被调用，直到camera preview销毁
+        camera.setPreviewCallback(new Camera.PreviewCallback() {
+            @Override
+            public void onPreviewFrame(byte[] data, Camera camera) {
+            }
+        });
+
+        //方式二：使用此方法注册预览回调接口时，会将下一帧数据回调给onPreviewFrame()方法，
+        //调用完成后这个回调接口将被销毁。也就是只会回调一次预览帧数据。
+        camera.setOneShotPreviewCallback(new Camera.PreviewCallback() {
+            @Override
+            public void onPreviewFrame(byte[] data, Camera camera) {
+
+            }
+        });
+
+        //它跟setPreviewCallback的工作方式一样，但是要求指定一个字节数组作为缓冲区，用于预览帧数据，
+        //这样能够更好的管理预览帧数据时使用的内存。它一般搭配addCallbackBuffer方法使用。
+        //首先分配一块内存作为缓冲区，size的计算方式见第四点中
+        byte[] mPreBuffer = new byte[2048];
+        camera.addCallbackBuffer(mPreBuffer);
+        camera.setPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
+            @Override
+            public void onPreviewFrame(byte[] data, Camera camera) {
+
+            }
+        });
+    }
 
 }

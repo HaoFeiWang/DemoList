@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.whf.demolist.anim.AnimActivity;
 import com.whf.demolist.bluetooth.BluetoothActivity;
+import com.whf.demolist.camera.Camera2Activity;
 import com.whf.demolist.camera.CameraActivity;
 import com.whf.demolist.database.DatabaseActivity;
 import com.whf.demolist.language.JavaActivity;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_anim).setOnClickListener(this);
         findViewById(R.id.btn_qrcode).setOnClickListener(this);
         findViewById(R.id.btn_camera).setOnClickListener(this);
+        findViewById(R.id.btn_camera2).setOnClickListener(this);
         findViewById(R.id.btn_surface).setOnClickListener(this);
         findViewById(R.id.btn_bluetooth).setOnClickListener(this);
         findViewById(R.id.btn_binder).setOnClickListener(this);
@@ -61,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_camera:
                 startActivity(new Intent(this, CameraActivity.class));
+                break;
+            case R.id.btn_camera2:
+                startActivity(new Intent(this, Camera2Activity.class));
                 break;
             case R.id.btn_surface:
                 startActivity(new Intent(this, SurfaceViewActivity.class));

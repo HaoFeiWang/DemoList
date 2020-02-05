@@ -6,4 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".camera.Camera2Activity">
 
+    <TextureView
+        android:id="@+id/surface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </android.support.constraint.ConstraintLayout>
