@@ -42,7 +42,7 @@ class Camera2Activity : AppCompatActivity() {
             }
 
             override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
-                Log.i(tag, "onSurfaceTextureUpdated")
+                //Log.i(tag, "onSurfaceTextureUpdated")
             }
 
             override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
@@ -72,6 +72,18 @@ class Camera2Activity : AppCompatActivity() {
         val characteristics = cameraManager.getCameraCharacteristics("0")
         //获取StreamConfigurationMap，它是管理摄像头支持的所有输出格式和尺寸
         val streamConfigurationMap = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+
+        //获取所有输出格式
+        //主要格式为：ImageFormat.JPEG、ImageFormat.YUV_420_888
+        val outputFormats = streamConfigurationMap.outputFormats
+        for (format in outputFormats) {
+            Log.d(tag, "out put format = $format")
+
+            val sizeArray = streamConfigurationMap.getOutputSizes(format)
+            for (size in sizeArray) {
+                Log.d(tag, "output size = $size")
+            }
+        }
 
 
         //handler为StateCallback执行的线程，如果为空在当前线程执行

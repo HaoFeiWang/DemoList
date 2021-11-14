@@ -73,7 +73,7 @@ final class DecodeHandler extends Handler {
     /**
      * Decode the data within the viewfinder rectangle, and time how long it took. For efficiency,
      * reuse the same reader objects from one decode to the next.
-     *
+     * <p>
      * 对数据帧进行解码处理
      *
      * @param data   The YUV preview frame. YUV格式的预览帧数据
@@ -85,6 +85,9 @@ final class DecodeHandler extends Handler {
         Result rawResult = null;
 
         Point size = activity.getCameraManager().getBestPreviewSize();
+
+        Log.d(TAG,"data length = "+data.length);
+        Log.d(TAG, "size x = " + size.x + " size y = " + size.y);
 
         // 将获取的data翻转一下，因为预览画面是横屏显示的
         byte[] rotatedData = rotateYUV420Degree90(data, size.x, size.y);
@@ -102,7 +105,9 @@ final class DecodeHandler extends Handler {
 //        Bitmap lCameraBitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
 
         Rect rect = activity.getCropRect();
-        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(rotatedData, previewSizeX, previewSizeY, rect.left, rect.top,
+        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(
+                rotatedData, previewSizeX,
+                previewSizeY, rect.left, rect.top,
                 rect.width(), rect.height(), false);
 
         if (source != null) {
