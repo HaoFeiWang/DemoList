@@ -94,7 +94,6 @@ fun testCollection() {
 
     //Kotlin针对集合的扩展方法
     Log.d(TAG, set.joinToString(prefix = "[", postfix = "]"))
-    val maxValue = set.max()
     val last = set.last()
 
     val array = arrayOf("b", "c", "d")

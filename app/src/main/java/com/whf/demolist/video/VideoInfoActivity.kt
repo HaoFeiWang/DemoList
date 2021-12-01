@@ -77,7 +77,7 @@ class VideoInfoActivity : AppCompatActivity() {
             videoMetadata.previewImage = mmr.getFrameAtTime(START_TIME,MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
 
             //获取视频元数据
-            val durationMill = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toInt()
+            val durationMill = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toInt()?:0
             videoMetadata.duration = "${durationMill / 1000 / 60}分${durationMill / 1000 % 60}"
             videoMetadata.mineType = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)
             videoMetadata.videoWidth = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)

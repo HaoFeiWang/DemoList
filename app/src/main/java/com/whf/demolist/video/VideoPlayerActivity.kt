@@ -46,7 +46,7 @@ class VideoPlayerActivity : AppCompatActivity(), SurfaceHolder.Callback {
     }
 
     private fun initData() {
-        url = intent.getStringExtra(INTENT_URL)
+        url = intent.getStringExtra(INTENT_URL)?:""
         mediaPlayer = MediaPlayer()
         mediaPlayer.setDataSource(url)
         mediaPlayer.setOnPreparedListener {
@@ -87,16 +87,16 @@ class VideoPlayerActivity : AppCompatActivity(), SurfaceHolder.Callback {
         surfaceHolder.addCallback(this)
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
         Log.d(TAG, "surface changed!")
     }
 
-    override fun surfaceDestroyed(holder: SurfaceHolder?) {
+    override fun surfaceDestroyed(holder: SurfaceHolder) {
         Log.d(TAG, "surface destroy!")
         isSurfaceCreated = false
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder?) {
+    override fun surfaceCreated(holder: SurfaceHolder) {
         Log.d(TAG, "surface created!")
         isSurfaceCreated = true
 

@@ -37,20 +37,20 @@ class Camera2Activity : AppCompatActivity() {
     private fun initSurface() {
         //获取SurfaceHolder,并为其设置回调
         surface_view.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
-            override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
+            override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
                 Log.i(tag, "onSurfaceTextureSizeChanged width = $width height = $height")
             }
 
-            override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
+            override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
                 //Log.i(tag, "onSurfaceTextureUpdated")
             }
 
-            override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
+            override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
                 Log.i(tag, "onSurfaceTextureDestroyed")
                 return true
             }
 
-            override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
+            override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
                 Log.i(tag, "onSurfaceTextureAvailable width = $width height = $height")
                 surfaceTexture = surface
                 //设置预览尺寸
@@ -75,13 +75,15 @@ class Camera2Activity : AppCompatActivity() {
 
         //获取所有输出格式
         //主要格式为：ImageFormat.JPEG、ImageFormat.YUV_420_888
-        val outputFormats = streamConfigurationMap.outputFormats
-        for (format in outputFormats) {
-            Log.d(tag, "out put format = $format")
+        streamConfigurationMap?.let {
+            val outputFormats = it.outputFormats
+            for (format in outputFormats) {
+                Log.d(tag, "out put format = $format")
 
-            val sizeArray = streamConfigurationMap.getOutputSizes(format)
-            for (size in sizeArray) {
-                Log.d(tag, "output size = $size")
+                val sizeArray = it.getOutputSizes(format)
+                for (size in sizeArray) {
+                    Log.d(tag, "output size = $size")
+                }
             }
         }
 
